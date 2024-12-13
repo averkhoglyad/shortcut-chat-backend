@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-app-deployment
+  labels:
+    app: shortcut-k8s-application
+    env: dev
+spec:
+  selector:
+    matchLabels:
+      service: users
+  template:
+    metadata:
+      labels:
+        service: users
+    spec:
+      containers:
+        - name: users
+          image: shortcut/users:0.0.1-SNAPSHOT
+          ports:
+            - containerPort: 8080
+              name: users-app-port
+          env:
+            - name: JAVA_OPTS
+              value: -Xms50M -Xmx250M
+          args:
+            - "--spring.datasource.url=jdbc:postgresql://users-db-service:5432/users_app_db"
+            - "--spring.datasource.username=user"
+            - "--spring.datasource.password=pass"
+          resources:
+            limits:
+              memory: 900M
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: users-app-autoscaler
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: users-app-deployment
+  minReplicas: 2
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1733671207547-1" author="a.v.verkhoglyad">
+        <createTable tableName="users">
+            <column name="id" type="${uuidType}">
+                <constraints primaryKey="true" primaryKeyName="pk_users"/>
+            </column>
+            <column name="name" type="${stringType}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="${stringType}">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uc_users__email"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

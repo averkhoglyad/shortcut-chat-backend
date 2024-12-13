@@ -1,0 +1,55 @@
+version: '3.9'
+name: shortcut-local
+
+services:
+  gateway:
+    image: nginx:latest
+    ports:
+      - "8000:80"
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    restart: always
+
+  postgres:
+    image: postgres:14
+    ports:
+      - "15432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: users_app_db
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 1m
+      retries: 3
+      start_period: 30s
+    restart: always
+    volumes:
+      - ./docker/postgresql/data:/var/lib/postgresql/data
+
+  users-app:
+    image: "shortcut/users:0.0.1-SNAPSHOT"
+    command:
+      - "--spring.datasource.url=jdbc:postgresql://postgres:5432/users_app_db"
+      - "--spring.datasource.username=user"
+      - "--spring.datasource.password=pass"
+    healthcheck:
+      test: "curl --fail --silent localhost:8080/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: on-failure
+    deploy:
+      mode: replicated
+#      endpoint_mode: vip
+      endpoint_mode: dnsrr
+      replicas: 3
+      resources:
+        limits:
+          memory: 650M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s

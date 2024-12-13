@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/add-base-url : "true"
+  labels:
+    app: shortcut-k8s-application
+    env: dev
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: users.shortcut.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: users-app-service
+                port:
+                  number: 8080

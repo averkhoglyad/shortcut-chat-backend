@@ -1,0 +1,73 @@
+###
+GET http://localhost:8000/users/0193acd8-c2b9-70d0-8e30-8398f6981bf7
+
+###
+
+< {%
+    client.global.clearAll();
+    client.global.set('name', `John Snow ${$random.integer()}`)
+    client.global.set('email', `jsnow+${$random.integer()}@mail.net`)
+%}
+
+POST http://localhost:8000/users
+Content-Type: application/json
+
+{
+  "name": "{{ name }}",
+  "email": "{{ email }}"
+}
+
+> {%
+    client.test('User created', () => {
+        client.assert(!!response.body['id'], 'ID is missed')
+        client.assert(response.body['name'] == client.global.get('name'), "Wrong name")
+        client.assert(response.body['email'] == client.global.get('email'), "Wrong email")
+        client.global.set('userId', response.body['id'])
+    })
+%}
+
+###
+
+GET http://localhost:8080/users/{{ userId }}
+
+> {%
+    client.test('User loaded', () => {
+        client.assert(response.body['id'] == client.global.get('userId'), "Wrong ID")
+        client.assert(response.body['name'] == client.global.get('name'), "Wrong name")
+        client.assert(response.body['email'] == client.global.get('email'), "Wrong email")
+    })
+%}
+
+###
+
+< {%
+    client.global.set('name', `${client.global.get('name')} updated ${$random.integer()}`)
+    client.global.set('email', `updated+${$random.integer()}+${client.global.get('email')}`)
+%}
+PUT http://localhost:8080/users/{{ userId }}
+Content-Type: application/json
+
+{
+  "name": "{{ name }}",
+  "email": "{{ email }}"
+}
+
+> {%
+    client.test('User updated', () => {
+        client.assert(response.body['id'] == client.global.get('userId'), "Wrong ID")
+        client.assert(response.body['name'] == client.global.get('name'), "Wrong name")
+        client.assert(response.body['email'] == client.global.get('email'), "Wrong email")
+    })
+%}
+
+###
+
+GET http://localhost:8080/users/{{ userId }}
+
+> {%
+    client.test('User loaded', () => {
+        client.assert(response.body['id'] == client.global.get('userId'), "Wrong ID")
+        client.assert(response.body['name'] == client.global.get('name'), "Wrong name")
+        client.assert(response.body['email'] == client.global.get('email'), "Wrong email")
+    })
+%}

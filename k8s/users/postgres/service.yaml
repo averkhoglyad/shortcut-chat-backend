@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: users-db-service
+  labels:
+    app: shortcut-k8s-application
+    env: dev
+spec:
+  selector:
+    service: users-db
+  ports:
+    - port: 5432
+      targetPort: 5432
