@@ -1,11 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: users-db-deployment
+  name: users-db-statefulset
   labels:
     app: shortcut-k8s-application
     env: dev
 spec:
+  serviceName: users-db-service
   selector:
     matchLabels:
       service: users-db
@@ -19,6 +20,11 @@ spec:
         - name: postgres
           image: postgres:14
           imagePullPolicy: IfNotPresent
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /pre-stop.sh
           ports:
             - containerPort: 5432
               name: users-db-port
@@ -35,7 +41,16 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: users-db-data
-      volumes:
-        - name: users-db-data
-          persistentVolumeClaim:
-            claimName: users-db-pvc
+  volumeClaimTemplates:
+    - metadata:
+        name: users-db-data
+        labels:
+          app: shortcut-k8s-application
+          env: dev
+      spec:
+        volumeName: users-db-pv
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1G

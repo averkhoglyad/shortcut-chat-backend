@@ -9,25 +9,10 @@ spec:
   capacity:
     storage: 5Gi
   volumeMode: Filesystem
-  storageClassName: standard
+  storageClassName: hostpath
   accessModes:
+    - ReadWriteOnce
     - ReadWriteMany
   hostPath:
-    path: E:\tmp\k8s\users\postgres\data
+    path: /run/desktop/mnt/host/e/tmp/k8s/users/postgres/data
     type: DirectoryOrCreate
-
----
-
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: users-db-pvc
-  labels:
-    app: shortcut-k8s-application
-    env: dev
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 5Gi
