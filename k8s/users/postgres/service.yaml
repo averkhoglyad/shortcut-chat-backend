@@ -10,4 +10,4 @@ spec:
     service: users-db
   ports:
     - port: 5432
-      targetPort: 5432
+      targetPort: users-db-port

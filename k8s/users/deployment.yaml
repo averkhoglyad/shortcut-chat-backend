@@ -20,16 +20,33 @@ spec:
           ports:
             - containerPort: 8080
               name: users-app-port
-          env:
-            - name: JAVA_OPTS
-              value: -Xms50M -Xmx250M
+          envFrom:
+            - configMapRef:
+                name: users-app-config
+            - secretRef:
+                name: users-app-secret
           args:
-            - "--spring.datasource.url=jdbc:postgresql://users-db-service:5432/users_app_db"
-            - "--spring.datasource.username=user"
-            - "--spring.datasource.password=pass"
+            - "--spring.config.import=/opt/apt/config/application.properties"
           resources:
             limits:
               memory: 900M
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+          volumeMounts:
+            - name: config-volume
+              mountPath: /opt/apt/config/application.properties
+              subPath: application.properties
+              readOnly: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: users-app-config
 
 ---
 

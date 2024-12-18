@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: users-app-config
+  labels:
+    app: shortcut-k8s-application
+    service: users
+    env: dev
+data:
+  POSTGRES_DB: 'users_app_db'
+
+  application.properties: |
+    spring.datasource.url=jdbc:postgresql://users-db-service:5432/${POSTGRES_DB}
+    spring.datasource.username=${POSTGRES_USER}
+    spring.datasource.password=${POSTGRES_PASSWORD}
