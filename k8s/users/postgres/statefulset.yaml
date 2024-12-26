@@ -3,7 +3,8 @@ kind: StatefulSet
 metadata:
   name: users-db-statefulset
   labels:
-    app: shortcut-k8s-application
+    project: shortcut-k8s-application
+    app: users
     env: dev
 spec:
   serviceName: users-db-service
@@ -51,7 +52,8 @@ spec:
     - metadata:
         name: users-db-data
         labels:
-          app: shortcut-k8s-application
+          project: shortcut-k8s-application
+          app: users
           env: dev
       spec:
         volumeName: users-db-pv

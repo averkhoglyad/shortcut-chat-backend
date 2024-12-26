@@ -3,7 +3,8 @@ kind: PersistentVolume
 metadata:
   name: users-db-pv
   labels:
-    app: shortcut-k8s-application
+    project: shortcut-k8s-application
+    app: users
     env: dev
 spec:
   capacity:

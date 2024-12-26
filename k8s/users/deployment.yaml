@@ -3,16 +3,17 @@ kind: Deployment
 metadata:
   name: users-app-deployment
   labels:
-    app: shortcut-k8s-application
+    project: shortcut-k8s-application
+    app: users
     env: dev
 spec:
   selector:
     matchLabels:
-      service: users
+      service: users-app
   template:
     metadata:
       labels:
-        service: users
+        service: users-app
     spec:
       containers:
         - name: users
@@ -47,24 +48,3 @@ spec:
         - name: config-volume
           configMap:
             name: users-app-config
-
----
-
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: users-app-autoscaler
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: users-app-deployment
-  minReplicas: 2
-  maxReplicas: 6
-  metrics:
-    - type: Resource
-      resource:
-        name: memory
-        target:
-          type: Utilization
-          averageUtilization: 80

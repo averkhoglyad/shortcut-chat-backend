@@ -3,7 +3,8 @@ kind: Service
 metadata:
   name: users-app-service
   labels:
-    app: shortcut-k8s-application
+    project: shortcut-k8s-application
+    app: users
     env: dev
 spec:
   selector:

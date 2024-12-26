@@ -6,7 +6,8 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/add-base-url : "true"
   labels:
-    app: shortcut-k8s-application
+    project: shortcut-k8s-application
+    app: ingress
     env: dev
 spec:
   ingressClassName: nginx
