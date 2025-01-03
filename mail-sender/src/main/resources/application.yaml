@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: mail-sender-app
+
+  lifecycle:
+    timeout-per-shutdown-phase: 1m
+
+  kafka:
+    bootstrap-servers: http://localhost:9092
+    consumer:
+      group-id: mail-sender
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        'spring.json.use.type.headers' : false
+
+#  mail:
+#    host: smtp.gmail.com
+#    port: 587
+#    username: user@gmail.com
+#    password: some code phrase
+#    properties:
+#      'mail.smtp.auth': true
+#      'mail.smtp.starttls.enable': true
+
+sender:
+  from: user@gmail.com
+#  mail:
+#    output-dir: E:\\tmp\\inbox
+
+server:
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
