@@ -17,4 +17,8 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="1735820074971-1" author="a.v.verkhoglyad">
+        <tagDatabase tag="version-001"/>
+    </changeSet>
+
 </databaseChangeLog>

@@ -18,9 +18,12 @@
     <property name="decimalType" value="DECIMAL(15, 5)" dbms="postgresql"/>
     <property name="jsonType" value="JSONB" dbms="postgresql"/>
     <property name="timestampType" value="TIMESTAMP" dbms="postgresql"/>
+    <property name="binaryType" value="bytea" dbms="postgresql"/>
 
     <property name="uuidArrayType" value="UUID[]" dbms="postgresql"/>
     <property name="stringArrayType" value="VARCHAR[]" dbms="postgresql"/>
+    <property name="binaryArrayType" value="VARCHAR[]" dbms="postgresql"/>
+
 
     <include file="v1/changelog-all.xml" relativeToChangelogFile="true"/>
 

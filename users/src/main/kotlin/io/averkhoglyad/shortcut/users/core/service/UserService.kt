@@ -3,14 +3,19 @@ package io.averkhoglyad.shortcut.users.core.service
 import io.averkhoglyad.shortcut.users.core.converter.UserConverter
 import io.averkhoglyad.shortcut.users.core.model.User
 import io.averkhoglyad.shortcut.users.core.persistence.repository.UserRepository
+import io.averkhoglyad.shortcut.users.core.service.message.SendCreatedUserNotificationMessageFactoryImpl
+import io.averkhoglyad.shortcut.users.core.service.message.UserCreatedMessageFactoryImpl
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.UUID
+import java.util.*
 
 @Service
 class UserService(
     private val repository: UserRepository,
-    private val converter: UserConverter
+    private val converter: UserConverter,
+    private val userCreatedMessageFactory: UserCreatedMessageFactoryImpl,
+    private val sendCreatedUserNotificationMessageFactory: SendCreatedUserNotificationMessageFactoryImpl,
+    private val messageOutboxService: OutboxService
 ) {
 
     @Transactional(readOnly = true)
@@ -24,9 +29,21 @@ class UserService(
     fun create(user: User): User {
         require(user.id == null)
 
-        val entity = converter.toEntity(user)
-        val saved = repository.save(entity)
-        return converter.fromEntity(saved)
+        return converter.toEntity(user)
+            .let { repository.save(it) }
+            .let { converter.fromEntity(it) }
+            .also { sendNotification(it) }
+            .also { emitUserCreatedLifecycleEvent(it) }
+    }
+
+    private fun sendNotification(user: User) {
+        val message = userCreatedMessageFactory.create(user)
+        messageOutboxService.saveMessage(message)
+    }
+
+    private fun emitUserCreatedLifecycleEvent(user: User) {
+        val message = sendCreatedUserNotificationMessageFactory.create(user)
+        messageOutboxService.saveMessage(message)
     }
 
     @Transactional
@@ -37,7 +54,14 @@ class UserService(
             ?.let { converter.toEntity(user, it) }
             ?: throw RuntimeException("User with id ${user.id} not found")
 
-        val saved = repository.save(entity)
-        return converter.fromEntity(saved)
+        return repository.save(entity)
+            .let { converter.fromEntity(it) }
+            .also { emitUserUpdatedLifecycleEvent(it) }
+    }
+
+    private fun emitUserUpdatedLifecycleEvent(user: User) {
+        // TODO: Add user updated lifecycle event
+//        val message = userUpdatedMessageFactory.create(user)
+//        messageOutboxService.saveMessage(message)
     }
 }

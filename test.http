@@ -1,3 +1,5 @@
+GET {{ usersAppUrl }}/actuator/health
+
 ###
 
 < {%
