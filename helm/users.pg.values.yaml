@@ -1,0 +1,20 @@
+fullnameOverride: users-db
+
+database: users_app_db
+username: user
+password: pass
+
+volumeMounts:
+  - mountPath: /var/lib/postgresql/data
+    name: db-data
+
+volumeClaimTemplates:
+  - metadata:
+      name: db-data
+    spec:
+      volumeName: users-pg-data
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi

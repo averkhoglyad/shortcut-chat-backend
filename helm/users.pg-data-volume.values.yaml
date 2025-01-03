@@ -1,0 +1,3 @@
+fullnameOverride: users-pg-data
+hostPath:
+  path: /run/desktop/mnt/host/e/tmp/k8s/users/postgres/data

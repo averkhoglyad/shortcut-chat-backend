@@ -1,0 +1,22 @@
+nameOverride: ""
+fullnameOverride: ""
+
+storageCapacity: 100Mi
+storageClassName: hostpath
+
+accessModes:
+  - ReadOnlyMany
+  - ReadWriteOnce
+  - ReadWriteMany
+
+hostPath:
+  path: /tmp
+  type: DirectoryOrCreate
+
+claim:
+  enabled: false
+  accessModes:
+    - ReadOnlyMany
+    - ReadWriteOnce
+    - ReadWriteMany
+  resources: {}

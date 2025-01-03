@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "mount-volume.fullname" . }}
+  labels:
+    {{- include "mount-volume.labels" . | nindent 4 }}
+spec:
+  capacity:
+    storage: {{ .Values.storageCapacity }}
+  volumeMode: Filesystem
+  storageClassName: {{ .Values.storageClassName }}
+  accessModes:
+    {{- toYaml .Values.accessModes | nindent 4 }}
+  hostPath:
+    {{- toYaml .Values.hostPath | nindent 4 }}

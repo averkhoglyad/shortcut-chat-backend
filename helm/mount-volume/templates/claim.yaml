@@ -1,0 +1,18 @@
+{{- if .Values.claim.enabled -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "mount-volume.fullname" . }}
+  labels:
+    {{- include "mount-volume.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    {{- toYaml .Values.claim.accessModes | nindent 4 }}
+  resources:
+    {{- if .Values.claim.resources }}
+      {{- toYaml .Values.claim.resources | nindent 4 }}
+    {{- else }}
+    requests:
+      storage: {{ .Values.storageCapacity }}
+    {{- end }}
+{{- end }}

@@ -1,0 +1,8 @@
+fullnameOverride: users-app
+
+database:
+  host: users-db
+  port: 5432
+  name: users_app_db
+  username: user
+  password: pass
