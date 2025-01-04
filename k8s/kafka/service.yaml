@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper-service
+  labels:
+    project: shortcut-k8s-application
+    app: kafka
+    env: dev
+spec:
+  ports:
+    - name: kafka-listener
+      port: 9092
+      targetPort: kafka-port
+  selector:
+    app: kafka

@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: users
-          image: shortcut/users:0.0.1-SNAPSHOT
+          image: shortcut/users:0.0.2-SNAPSHOT
           ports:
             - containerPort: 8080
               name: users-app-port

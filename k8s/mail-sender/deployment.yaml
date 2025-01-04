@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mail-sender-deployment
+  labels:
+    project: shortcut-k8s-application
+    app: mail-sender
+    env: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: mail-sender
+  template:
+    metadata:
+      labels:
+        service: mail-sender
+    spec:
+      containers:
+        - name: mail-sender
+          image: shortcut/mail-sender:0.0.2-SNAPSHOT
+          envFrom:
+            - configMapRef:
+                name: mail-sender-config
+            - secretRef:
+                name: mail-sender-secret
+          args:
+            - "--spring.config.import=/opt/apt/config/application.properties"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /opt/apt/config/application.properties
+              subPath: application.properties
+              readOnly: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: mail-sender-config
