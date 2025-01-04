@@ -8,4 +8,4 @@ helm install ./users-app -f ./users.app.values.yaml
 
 kubectl port-forward svc/users-app 8000:8080
 
-
+helm install ./mail-sender -f ./mail-sender.values.yaml

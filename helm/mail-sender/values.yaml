@@ -95,7 +95,7 @@ kafka:
   port: 9092
 
 smtp:
-  host: localhost
-  port: 5432
-  username: postgres
-  password: ''
+  host: smtp.host
+  port: 587
+  username: user
+  password: pass
