@@ -57,16 +57,18 @@ services:
       interval: 20s
       retries: 5
       start_period: 10s
+    restart: always
     depends_on:
       zookeeper:
         condition: service_healthy
 
   users-app:
-    image: "shortcut/users:0.0.1-SNAPSHOT"
+    image: "shortcut/users:0.0.2-SNAPSHOT"
     command:
       - "--spring.datasource.url=jdbc:postgresql://postgres:5432/users_app_db"
       - "--spring.datasource.username=user"
       - "--spring.datasource.password=pass"
+      - "--spring.kafka.bootstrap-servers=http://kafka:9092"
     healthcheck:
       test: "curl --fail --silent localhost:8080/actuator/health | grep UP || exit 1"
       interval: 20s
@@ -87,3 +89,15 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
+
+  mail-sender:
+    image: "shortcut/mail-sender:0.0.2-SNAPSHOT"
+    command:
+      - "--spring.kafka.bootstrap-servers=http://kafka:9092"
+      - "--spring.mail.host=smtp.gmail.com"
+      - "--spring.mail.port=587"
+      - "--spring.mail.username=user@gmail.com"
+      - "--spring.mail.password=some code phrase"
+      - "--spring.mail.properties.mail.smtp.auth=true"
+      - "--spring.mail.properties.mail.smtp.starttls.enable=true"
+    restart: on-failure
