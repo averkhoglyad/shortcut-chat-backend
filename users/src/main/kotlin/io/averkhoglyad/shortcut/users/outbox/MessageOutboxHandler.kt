@@ -64,8 +64,8 @@ class MessageOutboxHandlerImpl(
         }
     }
 
+    // TODO: Must be configurable!
     private fun convertEventName(messageType: String): String {
-        // TODO: Must be configurable!
         return when (messageType) {
             "SendCreatedUserNotification" -> "SendEmail"
             else -> messageType
@@ -73,7 +73,7 @@ class MessageOutboxHandlerImpl(
     }
 
     override fun cleanOld() {
-        messageOutboxRepository.deleteByPublishedAtLessThan(Instant.now().minus(validPeriod))
+        messageOutboxRepository.deleteByPublishedAtLessThan(Instant.now() - validPeriod)
     }
 }
 
@@ -84,10 +84,6 @@ const val EVENT_VERSION = "X-Event-Version"
 const val PUBLISHED_AT = "X-Published-At"
 const val PUBLISHED_BY = "X-Published-By"
 
-private fun Headers.addAsString(name: String, value: String) {
-    add(name, value.toByteArray(Charsets.UTF_8))
-}
+private fun Headers.addAsString(name: String, value: String) = add(name, value.toByteArray(Charsets.UTF_8))
 
-private fun Headers.addAsString(name: String, value: Any?) {
-    addAsString(name, value.toString())
-}
+private fun Headers.addAsString(name: String, value: Any?) = addAsString(name, value.toString())

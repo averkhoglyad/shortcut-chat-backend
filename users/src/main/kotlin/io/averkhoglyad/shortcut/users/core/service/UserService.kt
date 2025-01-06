@@ -37,13 +37,15 @@ class UserService(
     }
 
     private fun sendNotification(user: User) {
-        val message = userCreatedMessageFactory.create(user)
-        messageOutboxService.saveMessage(message)
+        messageOutboxService.saveMessage(
+            message = userCreatedMessageFactory.create(user)
+        )
     }
 
     private fun emitUserCreatedLifecycleEvent(user: User) {
-        val message = sendCreatedUserNotificationMessageFactory.create(user)
-        messageOutboxService.saveMessage(message)
+        messageOutboxService.saveMessage(
+            message = sendCreatedUserNotificationMessageFactory.create(user)
+        )
     }
 
     @Transactional

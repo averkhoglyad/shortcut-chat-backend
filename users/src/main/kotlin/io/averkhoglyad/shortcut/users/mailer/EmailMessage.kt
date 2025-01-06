@@ -6,7 +6,6 @@ package io.averkhoglyad.shortcut.users.mailer
  * Minimal email message model
  */
 data class EmailMessage(
-    val from: String? = null,
     val to: List<String>,
     val subject: String,
     val body: String
