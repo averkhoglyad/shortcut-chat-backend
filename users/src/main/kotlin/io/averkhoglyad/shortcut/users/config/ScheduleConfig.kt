@@ -1,11 +1,12 @@
 package io.averkhoglyad.shortcut.users.config
 
+import io.averkhoglyad.shortcut.users.outbox.MessageOutboxCleaner
 import io.averkhoglyad.shortcut.users.outbox.MessageOutboxHandler
+import io.averkhoglyad.shortcut.users.util.slf4j
 import net.javacrumbs.shedlock.core.LockProvider
 import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
-import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
@@ -21,15 +22,14 @@ import org.springframework.scheduling.annotation.Scheduled
 )
 @Profile("!test")
 class ScheduleConfig(
-    private val messageOutboxHandler: MessageOutboxHandler
+    private val messageOutboxHandler: MessageOutboxHandler,
+    private val messageOutboxCleaner: MessageOutboxCleaner
 ) {
 
-    private val logger = LoggerFactory.getLogger(javaClass)
+    private val logger by slf4j()
 
     @Bean
-    fun lockProvider(jdbc: JdbcTemplate): LockProvider {
-        return JdbcTemplateLockProvider(jdbc)
-    }
+    fun lockProvider(jdbc: JdbcTemplate): LockProvider = JdbcTemplateLockProvider(jdbc)
 
     @Scheduled(
         initialDelayString = "\${scheduler.message-outbox-handler.initial-delay}",
@@ -41,7 +41,8 @@ class ScheduleConfig(
         lockAtMostFor = "\${scheduler.message-outbox-handler.lock-at-most-for:PT10M}"
     )
     fun messageOutboxHandler() {
-        wrapUnsafe { messageOutboxHandler.handleNext() }
+        runCatching { messageOutboxHandler.handleNext() }
+            .onFailure { logger.error("Error during message-outbox-handler cron-job execution: ", it) }
     }
 
     @Scheduled(cron = "\${scheduler.message-outbox-cleaner.cron}")
@@ -51,14 +52,7 @@ class ScheduleConfig(
         lockAtMostFor = "\${scheduler.message-outbox-cleaner.lock-at-most-for:PT10M}"
     )
     fun messageOutboxCleaner() {
-        wrapUnsafe { messageOutboxHandler.cleanOld() }
-    }
-
-    private inline fun wrapUnsafe(block: () -> Unit) {
-        try {
-            block()
-        } catch (e: Exception) {
-            logger.error("Error during cron-job execution: ", e);
-        }
+        runCatching { messageOutboxCleaner.cleanOld() }
+            .onFailure { logger.error("Error during message-outbox-cleaner cron-job execution: ", it) }
     }
 }

@@ -6,3 +6,11 @@ database:
   name: users_app_db
   username: user
   password: pass
+
+kafka:
+  server: kafka
+  port: 9092
+
+autoscaling:
+  enabled: true
+  minReplicas: 2

@@ -13,7 +13,8 @@ interface MessageOutboxRepository: Repository<MessageOutboxEntity, UUID> {
 
     fun save(user: MessageOutboxEntity): MessageOutboxEntity
 
-    fun findByPublishedAtIsNullOrderByCreatedAt(pageable: Pageable): List<MessageOutboxEntity>
+    fun findByCreatedAtLessThanAndPublishedAtIsNullOrderByCreatedAt(before: Instant,
+                                                                    pageable: Pageable): List<MessageOutboxEntity>
 
     @Modifying
     @Query("UPDATE message_outbox SET published_at=now() WHERE id IN (:ids)")

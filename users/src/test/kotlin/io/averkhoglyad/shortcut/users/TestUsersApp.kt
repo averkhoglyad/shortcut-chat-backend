@@ -1,6 +1,5 @@
-package io.averkhoglyad.users
+package io.averkhoglyad.shortcut.users
 
-import io.averkhoglyad.shortcut.users.UsersApp
 import org.springframework.boot.fromApplication
 import org.springframework.boot.with
 

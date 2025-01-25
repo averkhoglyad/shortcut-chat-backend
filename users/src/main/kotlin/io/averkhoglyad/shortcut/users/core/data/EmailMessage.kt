@@ -1,6 +1,4 @@
-package io.averkhoglyad.shortcut.users.mailer
-
-// TODO: Must be moved to email sender api module
+package io.averkhoglyad.shortcut.users.core.data
 
 /**
  * Minimal email message model

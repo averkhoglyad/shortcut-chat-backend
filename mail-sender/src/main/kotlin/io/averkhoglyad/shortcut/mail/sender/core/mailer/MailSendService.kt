@@ -13,6 +13,8 @@ class MailSendService(
 ) {
 
     fun send(message: EmailMessage) {
+        require(message.to.isNotEmpty())
+
         messageFactory.create(from, message)
             .let { emailSender.send(it) }
     }

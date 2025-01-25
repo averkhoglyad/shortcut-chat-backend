@@ -21,11 +21,13 @@ class OutboxServiceImpl(
 
     @Transactional
     override fun saveMessage(message: Message<*>) {
-        val entity = MessageOutboxEntity().apply {
-            this.type = message.type
-            this.version = message.version
-            this.body = objectMapper.writeValueAsBytes(message.body)
-        }
+        val entity = MessageOutboxEntity()
+            .apply {
+                type = message.type
+                version = message.version
+                body = objectMapper.writeValueAsBytes(message.body)
+            }
+
         repository.save(entity)
     }
 }

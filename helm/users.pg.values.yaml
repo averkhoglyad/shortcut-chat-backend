@@ -8,13 +8,7 @@ volumeMounts:
   - mountPath: /var/lib/postgresql/data
     name: db-data
 
-volumeClaimTemplates:
-  - metadata:
-      name: db-data
-    spec:
-      volumeName: users-pg-data
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 100Mi
+volumes:
+  - name: db-data
+    persistentVolumeClaim:
+      claimName: users-pg-data

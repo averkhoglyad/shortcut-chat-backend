@@ -1,0 +1,7 @@
+fullnameOverride: kafka
+
+extraConfig:
+  deleteTopicEnable: true
+  autoCreateTopicsEnable: true
+  offsetsTopicReplicationFactor: 1
+  defaultReplicationFactor: 1

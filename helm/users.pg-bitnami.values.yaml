@@ -1,0 +1,16 @@
+fullnameOverride: users-db
+
+global:
+  defaultStorageClass: hostpath
+  postgresql:
+    auth:
+      username: "user"
+      password: "pass"
+      database: "users_app_db"
+
+primary:
+  persistence:
+    existingClaim: users-pg-data
+
+volumePermissions:
+  enabled: true

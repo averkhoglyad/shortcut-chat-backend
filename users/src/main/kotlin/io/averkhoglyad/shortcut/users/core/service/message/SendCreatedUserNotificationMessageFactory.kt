@@ -2,11 +2,12 @@ package io.averkhoglyad.shortcut.users.core.service.message
 
 import io.averkhoglyad.shortcut.users.core.model.Message
 import io.averkhoglyad.shortcut.users.core.model.User
-import io.averkhoglyad.shortcut.users.mailer.EmailMessage
+import io.averkhoglyad.shortcut.users.core.data.EmailMessage
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 @Component
-class SendCreatedUserNotificationMessageFactoryImpl : MessageFactory<User, EmailMessage> {
+class SendCreatedUserNotificationMessageFactoryImpl() : MessageFactory<User, EmailMessage> {
 
     override fun create(user: User): Message<EmailMessage> {
         var emailMessage = EmailMessage(

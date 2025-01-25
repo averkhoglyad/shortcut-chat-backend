@@ -8,8 +8,11 @@ data:
   DB_HOST: '{{ .Values.database.host }}'
   DB_PORT: '{{ .Values.database.port }}'
   DB_NAME: '{{ .Values.database.name }}'
+  KAFKA_SERVER: '{{ .Values.kafka.server }}'
+  KAFKA_PORT: '{{ .Values.kafka.port }}'
 
   application.properties: |
     spring.datasource.url=jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
     spring.datasource.username=${DB_USERNAME}
     spring.datasource.password=${DB_PASSWORD}
+    spring.kafka.bootstrap-servers=http://${KAFKA_SERVER}:${KAFKA_PORT}

@@ -29,6 +29,9 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+  mvc:
+    problemdetails:
+      enabled: true
 
 server:
   shutdown: graceful
@@ -41,7 +44,7 @@ scheduler:
     initial-delay: PT10S
     fixed-delay: PT1S
     lock-at-least-for: ${scheduler.message-outbox-handler.fixed-delay}
-    lock-at-most-for: PT1M
+    lock-at-most-for: PT5M
   message-outbox-cleaner:
     cron: 0 0 6 * * *
     lock-at-least-for: PT1M

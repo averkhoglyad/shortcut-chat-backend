@@ -30,17 +30,19 @@ class FileSystemBaseMailSender(
         simpleMessages
             .filterNotNull()
             .flatMap { message -> (message.to ?: arrayOf("null")).map { recipient -> recipient to message } }
-            .forEach { (recipient, message) ->
-                val path: Path = createFileToWriteMessage(recipient)
-                Files.createDirectories(path.parent)
-                Files.newOutputStream(path)
-                    .use {
-                        MimeMailMessage(MimeMessage(null as Session?))
-                            .apply { message.copyTo(this) }
-                            .mimeMessage
-                            .writeTo(it)
-                        it.flush()
-                    }
+            .forEach { (recipient, message) -> writeMessageToFile(recipient, message) }
+    }
+
+    private fun writeMessageToFile(recipient: String, message: SimpleMailMessage) {
+        val path: Path = createFileToWriteMessage(recipient)
+        Files.createDirectories(path.parent)
+        Files.newOutputStream(path)
+            .use {
+                MimeMailMessage(MimeMessage(null as Session?))
+                    .apply { message.copyTo(this) }
+                    .mimeMessage
+                    .writeTo(it)
+                it.flush()
             }
     }
 

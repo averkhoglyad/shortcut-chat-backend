@@ -1,3 +1,14 @@
 fullnameOverride: users-pg-data
 hostPath:
   path: /run/desktop/mnt/host/e/tmp/k8s/users/postgres/data
+storageCapacity: 8Gi
+
+claim:
+  enabled: true
+  accessModes:
+    - ReadOnlyMany
+    - ReadWriteOnce
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 8Gi

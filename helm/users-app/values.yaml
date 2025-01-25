@@ -97,3 +97,7 @@ database:
   name: users_db
   username: postgres
   password: ''
+
+kafka:
+  server: localhost
+  port: 9092

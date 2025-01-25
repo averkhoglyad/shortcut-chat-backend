@@ -5,7 +5,7 @@ import io.averkhoglyad.shortcut.users.core.model.User
 import org.springframework.stereotype.Component
 
 @Component
-class UserCreatedMessageFactoryImpl : MessageFactory<User, User> {
+class UserCreatedMessageFactoryImpl() : MessageFactory<User, User> {
 
     override fun create(user: User): Message<User> {
         return Message(

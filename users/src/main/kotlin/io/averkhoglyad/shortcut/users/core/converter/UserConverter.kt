@@ -17,15 +17,14 @@ interface UserConverter {
 @Component
 class UserConverterImpl : UserConverter {
 
-    override fun toEntity(user: User): UserEntity {
-        return toEntity(user, UserEntity())
-    }
+    override fun toEntity(user: User): UserEntity = toEntity(user, UserEntity())
 
     override fun toEntity(user: User, entity: UserEntity): UserEntity {
-        entity.id = user.id
-        entity.name = user.name
-        entity.email = user.email
-        return entity
+        return entity.apply {
+            id = user.id
+            name = user.name
+            email = user.email
+        }
     }
 
     override fun fromEntity(entity: UserEntity): User {

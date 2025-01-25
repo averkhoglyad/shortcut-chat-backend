@@ -1,7 +1,6 @@
-package io.averkhoglyad.users
+package io.averkhoglyad.shortcut.users
 
 import org.junit.jupiter.api.Test
-import org.springframework.boot.SpringBootConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
 
@@ -14,6 +13,3 @@ class UsersAppTests {
     }
 
 }
-
-@SpringBootConfiguration
-class UsersAppTestsConfig
