@@ -7,14 +7,19 @@ metadata:
 data:
   KAFKA_SERVER: '{{ .Values.kafka.server }}'
   KAFKA_PORT: '{{ .Values.kafka.port }}'
+  {{- if .Values.smtp.enabled }}
   SMTP_HOST: '{{ .Values.smtp.host }}'
   SMTP_PORT: '{{ .Values.smtp.port }}'
+  {{- end }}
 
   application.properties: |
-    spring.kafka.bootstrap-servers=http://${KAFKA_SERVER}:${KAFKA_PORT}
+    spring.kafka.bootstrap-servers=${KAFKA_SERVER}:${KAFKA_PORT}
+
+    {{- if .Values.smtp.enabled }}
     spring.mail.host=${SMTP_HOST}
     spring.mail.port=${SMTP_PORT}
     spring.mail.username=${SMTP_USER}
     spring.mail.password=${SMTP_PASSWORD}
     spring.mail.properties.mail.smtp.auth=true
     spring.mail.properties.mail.smtp.starttls.enable=true
+    {{- end }}

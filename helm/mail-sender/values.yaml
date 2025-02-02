@@ -95,6 +95,7 @@ kafka:
   port: 9092
 
 smtp:
+  enabled: false
   host: smtp.host
   port: 587
   username: user

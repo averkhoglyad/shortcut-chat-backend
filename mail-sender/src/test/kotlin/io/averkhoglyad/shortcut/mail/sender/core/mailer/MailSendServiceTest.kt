@@ -1,5 +1,6 @@
 package io.averkhoglyad.shortcut.mail.sender.core.mailer
 
+import io.averkhoglyad.shortcut.mail.sender.core.service.MailSendService
 import io.averkhoglyad.shortcut.mail.sender.test.emailMessages
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
@@ -38,7 +39,7 @@ class MailSendServiceTest : FreeSpec({
         "throws IllegalArgumentException if no receiver email" {
             val message = emailMessages.next().copy(to = emptyList())
             shouldThrow<IllegalArgumentException> {
-                service.send(message)
+                service.send(eventId, message)
             }
         }
 
@@ -50,7 +51,7 @@ class MailSendServiceTest : FreeSpec({
                 every { emailSender.send(any()) } just runs
 
                 // when
-                service.send(message)
+                service.send(eventId, message)
 
                 // then
                 verify { messageFactory.create(fromEmail, message) }

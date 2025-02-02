@@ -2,16 +2,53 @@ version: '3.9'
 name: shortcut-local
 
 services:
-  gateway:
-    image: nginx:latest
-    ports:
-      - "8000:80"
-    volumes:
-      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.8.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    healthcheck:
+      test: echo srvr | nc zookeeper 2181 || exit 1
+      retries: 5
+      interval: 30s
     restart: always
+
+  kafka:
+    image: confluentinc/cp-kafka:7.8.0
+    ports:
+      - '19092:19092'
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INNER://kafka:9092,OUTER://localhost:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INNER:PLAINTEXT,OUTER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INNER
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_DELETE_TOPIC_ENABLE: true
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: nc -z localhost 9092 || exit -1
+      interval: 20s
+      retries: 5
+      start_period: 10s
+    restart: always
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 3000:8080
+    environment:
+      DYNAMIC_CONFIG_ENABLED: true
 
   postgres:
     image: postgres:14
+    container_name: postgres
     ports:
       - "15432:5432"
     environment:
@@ -27,40 +64,14 @@ services:
     volumes:
       - ./docker/postgresql/data:/var/lib/postgresql/data
 
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.8.0
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    healthcheck:
-      test: echo srvr | nc zookeeper 2181 || exit 1
-      retries: 5
-      interval: 30s
-    restart: always
-
-  kafka:
-    image: confluentinc/cp-kafka:7.8.0
+  gateway:
+    image: nginx:latest
+    container_name: gateway
     ports:
-      - '9092:9092'
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_DELETE_TOPIC_ENABLE: 'true'
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
-      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
-    healthcheck:
-      test: nc -z localhost 9092 || exit -1
-      interval: 20s
-      retries: 5
-      start_period: 10s
+      - "8000:80"
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
     restart: always
-    depends_on:
-      zookeeper:
-        condition: service_healthy
 
   users-app:
     image: "shortcut/users:0.0.2-SNAPSHOT"
@@ -68,7 +79,7 @@ services:
       - "--spring.datasource.url=jdbc:postgresql://postgres:5432/users_app_db"
       - "--spring.datasource.username=user"
       - "--spring.datasource.password=pass"
-      - "--spring.kafka.bootstrap-servers=http://kafka:9092"
+      - "--spring.kafka.bootstrap-servers=kafka:9092"
     healthcheck:
       test: "curl --fail --silent localhost:8080/actuator/health | grep UP || exit 1"
       interval: 20s
@@ -90,14 +101,27 @@ services:
         max_attempts: 3
         window: 120s
 
+  redis:
+    image: redis:7.4.2
+    container_name: redis
+    ports:
+      - "16379:6379"
+    volumes:
+      - ./docker/redis/data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
   mail-sender:
     image: "shortcut/mail-sender:0.0.2-SNAPSHOT"
     command:
-      - "--spring.kafka.bootstrap-servers=http://kafka:9092"
-      - "--spring.mail.host=smtp.gmail.com"
-      - "--spring.mail.port=587"
-      - "--spring.mail.username=user@gmail.com"
-      - "--spring.mail.password=some code phrase"
-      - "--spring.mail.properties.mail.smtp.auth=true"
-      - "--spring.mail.properties.mail.smtp.starttls.enable=true"
+      - "--spring.kafka.bootstrap-servers=kafka:9092"
     restart: on-failure
+    healthcheck:
+      test: "curl --fail --silent localhost:8080/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 10s

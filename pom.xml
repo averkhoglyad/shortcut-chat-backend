@@ -11,7 +11,7 @@
     <modules>
         <module>users</module>
         <module>mail-sender</module>
-        <module>jameter-test</module>
+        <module>jmeter-test</module>
     </modules>
 
     <properties>

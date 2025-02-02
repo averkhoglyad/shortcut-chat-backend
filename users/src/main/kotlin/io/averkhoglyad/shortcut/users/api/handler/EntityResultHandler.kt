@@ -1,9 +1,6 @@
 package io.averkhoglyad.shortcut.users.api.handler
 
-import io.averkhoglyad.shortcut.users.api.exception.badRequest
-import io.averkhoglyad.shortcut.users.api.exception.conflict
-import io.averkhoglyad.shortcut.users.api.exception.internalError
-import io.averkhoglyad.shortcut.users.api.exception.notFound
+import io.averkhoglyad.shortcut.users.api.util.unwrap
 import io.averkhoglyad.shortcut.users.core.data.EntityResult
 import org.springframework.core.MethodParameter
 import org.springframework.core.annotation.Order
@@ -44,14 +41,5 @@ class EntityResultHandler : ResponseBodyAdvice<Any> {
 private inline fun <reified E : Annotation> MethodParameter.classIsAnnotatedWith(): Boolean =
     declaringClass.kotlin.hasAnnotation<E>()
 
-private inline fun <reified E : Any> MethodParameter.isSubtypeOf(): Boolean {
-    return parameterType.kotlin.isSubclassOf(E::class)
-}
-
-private fun <E> EntityResult<E>.unwrap(): E = when (this) {
-    is EntityResult.Success<E> -> this.entity
-    is EntityResult.NotFound<E> -> notFound()
-    is EntityResult.Invalid<E> -> badRequest()
-    is EntityResult.Conflict<E> -> conflict()
-    is EntityResult.Failed<E> -> internalError()
-}
+private inline fun <reified E : Any> MethodParameter.isSubtypeOf(): Boolean =
+    parameterType.kotlin.isSubclassOf(E::class)

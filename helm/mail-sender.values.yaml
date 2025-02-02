@@ -3,9 +3,3 @@ fullnameOverride: mail-sender
 kafka:
   server: kafka
   port: 9092
-
-smtp:
-  host: smtp.gmail.com
-  port: 587
-  username: user
-  password: pass

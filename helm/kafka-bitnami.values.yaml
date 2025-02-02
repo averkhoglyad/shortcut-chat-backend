@@ -1,5 +1,8 @@
 fullnameOverride: kafka
 
+listeners:
+  client:
+    protocol: PLAINTEXT
 extraConfig:
   deleteTopicEnable: true
   autoCreateTopicsEnable: true

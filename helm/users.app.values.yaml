@@ -13,4 +13,5 @@ kafka:
 
 autoscaling:
   enabled: true
-  minReplicas: 2
+  minReplicas: 3
+  maxReplicas: 9

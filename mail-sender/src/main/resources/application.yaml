@@ -6,13 +6,20 @@ spring:
     timeout-per-shutdown-phase: 1m
 
   kafka:
-    bootstrap-servers: http://localhost:9092
+    bootstrap-servers: localhost:9092
     consumer:
       group-id: mail-sender
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         'spring.json.use.type.headers' : false
+
+  data:
+    redis:
+      database: 0
+      host: localhost
+      port: 16379
+      timeout: 60000
 
 #  mail:
 #    host: smtp.gmail.com

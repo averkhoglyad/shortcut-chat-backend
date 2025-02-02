@@ -1,6 +1,9 @@
 GET {{ usersAppUrl }}/actuator/health
 
 ###
+GET {{ mailerAppUrl }}/actuator/health
+
+###
 
 < {%
     client.global.clearAll();

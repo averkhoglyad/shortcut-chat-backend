@@ -1,0 +1,11 @@
+yamlApplicationConfig:
+  kafka:
+    clusters:
+      - name: shortcut
+        bootstrapServers: kafka:9092
+  auth:
+    type: disabled
+  management:
+    health:
+      ldap:
+        enabled: false

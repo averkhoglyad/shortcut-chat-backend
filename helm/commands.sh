@@ -15,3 +15,7 @@ helm install users-app ./users-app -f ./users.app.values.yaml
 kubectl port-forward svc/users-app 8000:8080
 
 helm install mail-sender ./mail-sender -f ./mail-sender.values.yaml
+
+helm install kafka-ui kafka-ui/kafka-ui -f ./kafka-ui.values.yaml
+
+kubectl port-forward svc/kafka-ui 3000:80

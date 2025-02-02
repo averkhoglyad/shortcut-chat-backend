@@ -34,3 +34,4 @@ build/
 
 etc/
 /docker/postgresql/data/
+/docker/redis/data/
