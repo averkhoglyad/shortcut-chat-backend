@@ -5,11 +5,11 @@ metadata:
   labels:
     {{- include "users-app.labels" . | nindent 4 }}
 data:
-  DB_HOST: '{{ .Values.database.host }}'
-  DB_PORT: '{{ .Values.database.port }}'
-  DB_NAME: '{{ .Values.database.name }}'
-  KAFKA_SERVER: '{{ .Values.kafka.server }}'
-  KAFKA_PORT: '{{ .Values.kafka.port }}'
+  DB_HOST: {{ .Values.database.host | quote }}
+  DB_PORT: {{ .Values.database.port | quote }}
+  DB_NAME: {{ .Values.database.name | quote }}
+  KAFKA_SERVER: {{ .Values.kafka.server | quote }}
+  KAFKA_PORT: {{ .Values.kafka.port | quote }}
 
   application.properties: |
     spring.datasource.url=jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}

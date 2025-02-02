@@ -100,3 +100,8 @@ smtp:
   port: 587
   username: user
   password: pass
+
+redis:
+  database: 0
+  host: localhost
+  port: 6379

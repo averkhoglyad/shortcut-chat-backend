@@ -12,8 +12,6 @@ private val inc = AtomicInteger(100_000)
 fun main() {
     val baseUrl = "http://127.0.0.1:8000"
     val threadGroup = rpsThreadGroup()
-        .initThreads(10)
-        .maxThreads(10)
 //        .rampTo(10.0, Duration.ofSeconds(5))
 //        .rampTo(100.0, Duration.ofSeconds(5))
 //        .rampTo(1000.0, Duration.ofSeconds(5))

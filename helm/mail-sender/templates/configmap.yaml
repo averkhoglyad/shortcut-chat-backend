@@ -5,15 +5,21 @@ metadata:
   labels:
     {{- include "mail-sender.labels" . | nindent 4 }}
 data:
-  KAFKA_SERVER: '{{ .Values.kafka.server }}'
-  KAFKA_PORT: '{{ .Values.kafka.port }}'
+  KAFKA_SERVER: {{ .Values.kafka.server | quote }}
+  KAFKA_PORT: {{ .Values.kafka.port | quote }}
   {{- if .Values.smtp.enabled }}
-  SMTP_HOST: '{{ .Values.smtp.host }}'
-  SMTP_PORT: '{{ .Values.smtp.port }}'
+  SMTP_HOST: {{ .Values.smtp.host | quote }}
+  SMTP_PORT: {{ .Values.smtp.port | quote }}
   {{- end }}
+  REDIS_DATABASE: {{ .Values.redis.database | quote }}
+  REDIS_HOST: {{ .Values.redis.host | quote }}
+  REDIS_PORT: {{ .Values.redis.port | quote }}
 
   application.properties: |
     spring.kafka.bootstrap-servers=${KAFKA_SERVER}:${KAFKA_PORT}
+    spring.data.redis.database=${REDIS_DATABASE}
+    spring.data.redis.host=${REDIS_HOST}
+    spring.data.redis.port=${REDIS_PORT}
 
     {{- if .Values.smtp.enabled }}
     spring.mail.host=${SMTP_HOST}

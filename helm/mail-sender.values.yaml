@@ -3,3 +3,6 @@ fullnameOverride: mail-sender
 kafka:
   server: kafka
   port: 9092
+
+redis:
+  host: redis-master
