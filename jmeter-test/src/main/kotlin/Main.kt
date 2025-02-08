@@ -12,20 +12,15 @@ private val inc = AtomicInteger(100_000)
 fun main() {
     val baseUrl = "http://127.0.0.1:8000"
     val threadGroup = rpsThreadGroup()
-        .rampTo(10.0, Duration.ofSeconds(5))
-        .rampTo(100.0, Duration.ofSeconds(5))
-//        .rampTo(1000.0, Duration.ofSeconds(5))
-        .rampToAndHold(200.0, Duration.ofSeconds(1), Duration.ofSeconds(60))
-        .rampTo(0.0, Duration.ofSeconds(1))
+        .rampToAndHold(10.0, Duration.ofSeconds(1), Duration.ofSeconds(5))
+        .rampToAndHold(100.0, Duration.ofSeconds(5), Duration.ofSeconds(60))
+        .rampTo(0.0, Duration.ofSeconds(5))
         .children(
             httpDefaults().url(baseUrl),
-//            httpSampler("/actuator/health")
-            httpSampler("/users")
-                .post({ generateUserCreateRequestBody() }, ContentType.APPLICATION_JSON),
+            httpSampler("/users").post({ generateUserCreateRequestBody() }, ContentType.APPLICATION_JSON)
         )
 
     testPlan(threadGroup).run()
-//    testPlan(threadGroup, htmlReporter("E:\\tmp\\jmeter")).run()
 }
 
 private fun generateUserCreateRequestBody(): String = inc.getAndIncrement()
