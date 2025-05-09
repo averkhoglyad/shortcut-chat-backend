@@ -1,9 +1,9 @@
 package io.averkhoglyad.shortcut.users.core.service.message
 
-import io.averkhoglyad.shortcut.users.core.model.Message
+import io.averkhoglyad.shortcut.users.outbox.OutboxMessage
 
 interface MessageFactory<S, R> {
 
-    fun create(user: S): Message<R>
+    fun create(user: S): OutboxMessage<R>
 
 }

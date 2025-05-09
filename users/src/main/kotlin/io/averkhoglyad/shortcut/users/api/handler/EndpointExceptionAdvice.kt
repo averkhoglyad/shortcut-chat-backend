@@ -1,8 +1,7 @@
 package io.averkhoglyad.shortcut.users.api.handler
 
-//import jakarta.validation.ConstraintViolationException
-import io.averkhoglyad.shortcut.users.api.exception.EndpointException
-import io.averkhoglyad.shortcut.users.util.slf4j
+import io.averkhoglyad.shortcut.common.web.exception.EndpointException
+import io.averkhoglyad.shortcut.common.util.slf4j
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.*
 import org.springframework.http.ProblemDetail
@@ -39,15 +38,6 @@ class EndpointExceptionAdvice {
             .also { it.title = "illegal.argument" }
             .also { it.detail = e.message }
     }
-
-//    @ExceptionHandler
-//    fun handleConstraintViolationException(e: ConstraintViolationException): ProblemDetail {
-//        return ProblemDetail.forStatusAndDetail(BAD_REQUEST, "invalid.data")
-//            .also { problem ->
-//                e.constraintViolations
-//                    .forEachIndexed { (i, it) -> problem.setProperty("error_$i", "${it.propertyPath} - ${it.message}") }
-//            }
-//    }
 
     @ExceptionHandler(EndpointException::class)
     fun handleEndpointException(exception: EndpointException): ProblemDetail {

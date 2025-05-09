@@ -1,8 +1,8 @@
 package io.averkhoglyad.shortcut.users.config
 
+import io.averkhoglyad.shortcut.common.util.slf4j
 import io.averkhoglyad.shortcut.users.outbox.MessageOutboxCleaner
 import io.averkhoglyad.shortcut.users.outbox.MessageOutboxHandler
-import io.averkhoglyad.shortcut.users.util.slf4j
 import net.javacrumbs.shedlock.core.LockProvider
 import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock

@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: notification-app
+
+  lifecycle:
+    timeout-per-shutdown-phase: 1m
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: notification
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      properties:
+#        'spring.json.use.type.headers' : false
+#      auto-offset-reset: latest
+#      enable-auto-commit: false
+
+  mvc:
+    problemdetails:
+      enabled: true
+
+server:
+  shutdown: graceful
+
+integrations:
+  chat-service:
+    base-url: http://localhost:8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

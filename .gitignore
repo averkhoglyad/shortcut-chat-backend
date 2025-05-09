@@ -32,6 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 
-etc/
+_etc/
 /docker/postgresql/data/
 /docker/redis/data/

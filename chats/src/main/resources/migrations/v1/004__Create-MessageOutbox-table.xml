@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1745264310990-1" author="a.v.verkhoglyad">
+        <createTable tableName="message_outbox">
+            <column name="id" type="${uuidType}">
+                <constraints primaryKey="true" primaryKeyName="pk_message_outbox"/>
+            </column>
+            <column name="type" type="${stringType}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="${stringType}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="key" type="${stringType}"/>
+            <column name="body" type="${binaryType}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="${timestampType}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="published_at" type="${timestampType}"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1745264310990-2" author="a.v.verkhoglyad">
+        <createTable tableName="shedlock">
+            <column name="name" type="VARCHAR(64)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="lock_until" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="locked_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="locked_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1745264310990-3" author="a.v.verkhoglyad">
+        <tagDatabase tag="version-004"/>
+    </changeSet>
+
+</databaseChangeLog>

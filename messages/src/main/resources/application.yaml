@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: messages-app
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shortcut-chat
+    username: user
+    password: pass
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30_000
+      maximum-pool-size: 50
+      minimum-idle: 10
+      initialization-fail-timeout: 1
+      leak-detection-threshold: 0
+      register-mbeans: true
+  liquibase:
+    change-log: classpath:/migrations/changelog-master.xml
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+
+  lifecycle:
+    timeout-per-shutdown-phase: 1m
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        'spring.json.use.type.headers' : false
+
+  mvc:
+    problemdetails:
+      enabled: true
+
+server:
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

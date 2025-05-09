@@ -1,9 +1,10 @@
 package io.averkhoglyad.shortcut.users.core.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.averkhoglyad.shortcut.users.core.model.Message
-import io.averkhoglyad.shortcut.users.core.persistence.entity.MessageOutboxEntity
-import io.averkhoglyad.shortcut.users.core.persistence.repository.MessageOutboxRepository
+import io.averkhoglyad.shortcut.users.outbox.OutboxMessage
+import io.averkhoglyad.shortcut.users.core.persistence.entity.OutboxMessageEntity
+import io.averkhoglyad.shortcut.users.core.persistence.repository.OutboxMessageRepository
+import io.averkhoglyad.shortcut.users.outbox.OutboxServiceImpl
 import io.averkhoglyad.shortcut.users.test.firstArg
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.should
@@ -16,7 +17,7 @@ import io.mockk.*
 
 class OutboxServiceImplTest: FreeSpec({
 
-    val repository = mockk<MessageOutboxRepository>()
+    val repository = mockk<OutboxMessageRepository>()
     val objectMapper = mockk<ObjectMapper>()
 
     val service = OutboxServiceImpl(
@@ -40,7 +41,7 @@ class OutboxServiceImplTest: FreeSpec({
         service.saveMessage(message)
 
         // then
-        val entitySlot = slot<MessageOutboxEntity>()
+        val entitySlot = slot<OutboxMessageEntity>()
         verify { repository.save(capture(entitySlot)) }
         entitySlot.captured should {
             it.type shouldBe message.type
@@ -50,7 +51,7 @@ class OutboxServiceImplTest: FreeSpec({
     }
 })
 
-private fun nextMessage() = Message<Any>(
+private fun nextMessage() = OutboxMessage<Any>(
     type = Arb.string().next(),
     version = Arb.string().next(),
     body = Any()

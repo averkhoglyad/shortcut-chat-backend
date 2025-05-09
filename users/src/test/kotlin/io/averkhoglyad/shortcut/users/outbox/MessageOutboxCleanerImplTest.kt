@@ -1,14 +1,12 @@
 package io.averkhoglyad.shortcut.users.outbox
 
-import io.averkhoglyad.shortcut.users.core.persistence.repository.MessageOutboxRepository
+import io.averkhoglyad.shortcut.users.core.persistence.repository.OutboxMessageRepository
 import io.kotest.core.spec.style.FreeSpec
-import io.kotest.data.row
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.bind
 import io.kotest.property.arbitrary.instant
 import io.kotest.property.arbitrary.int
 import io.kotest.property.checkAll
-import io.kotest.property.forAll
 import io.mockk.*
 import java.time.Clock
 import java.time.Instant
@@ -16,7 +14,7 @@ import java.time.Period
 
 class MessageOutboxCleanerImplTest: FreeSpec({
 
-    val repository = mockk<MessageOutboxRepository>()
+    val repository = mockk<OutboxMessageRepository>()
     val clock: Clock = mockk<Clock>()
 
     "cleanOld call repository correctly" {

@@ -4,14 +4,20 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.averkhoglyad</groupId>
-    <artifactId>shortcut-task</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <artifactId>shortcut-chat-backend</artifactId>
+    <version>0.0.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>users</module>
+        <module>common</module>
+        <module>common-test</module>
+        <module>chats</module>
         <module>mail-sender</module>
+        <module>messages</module>
+        <module>notifications</module>
+        <module>users</module>
         <module>jmeter-test</module>
+        <module>react-sample</module>
     </modules>
 
     <properties>
@@ -28,21 +34,32 @@
         <jakart.mail.version>2.1.3</jakart.mail.version>
         <kotest.version>5.9.1</kotest.version>
         <kotest.spring-extension.version>1.3.0</kotest.spring-extension.version>
+        <kotest.testcontainer-extension.version>2.0.2</kotest.testcontainer-extension.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
+                <groupId>io.averkhoglyad</groupId>
+                <artifactId>common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.averkhoglyad</groupId>
+                <artifactId>common-test</artifactId>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-bom</artifactId>
                 <version>${kotlin.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -79,6 +96,11 @@
                 <groupId>io.kotest.extensions</groupId>
                 <artifactId>kotest-extensions-spring</artifactId>
                 <version>${kotest.spring-extension.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.kotest.extensions</groupId>
+                <artifactId>kotest-extensions-testcontainers</artifactId>
+                <version>${kotest.testcontainer-extension.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.mockk</groupId>

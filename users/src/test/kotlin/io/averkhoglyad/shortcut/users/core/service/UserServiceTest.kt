@@ -1,17 +1,17 @@
 package io.averkhoglyad.shortcut.users.core.service
 
 import io.averkhoglyad.shortcut.users.core.converter.UserConverter
-import io.averkhoglyad.shortcut.users.core.data.EmailMessage
-import io.averkhoglyad.shortcut.users.core.data.EntityResult.NotFound
-import io.averkhoglyad.shortcut.users.core.data.EntityResult.Success
-import io.averkhoglyad.shortcut.users.core.model.Message
+import io.averkhoglyad.shortcut.users.core.model.EmailMessage
+import io.averkhoglyad.shortcut.common.data.EntityResult.NotFound
+import io.averkhoglyad.shortcut.common.data.EntityResult.Success
+import io.averkhoglyad.shortcut.users.outbox.OutboxMessage
 import io.averkhoglyad.shortcut.users.core.model.User
 import io.averkhoglyad.shortcut.users.core.persistence.repository.UserRepository
 import io.averkhoglyad.shortcut.users.core.service.message.SendCreatedUserNotificationMessageFactoryImpl
 import io.averkhoglyad.shortcut.users.core.service.message.UserCreatedMessageFactoryImpl
+import io.averkhoglyad.shortcut.users.outbox.OutboxService
 import io.averkhoglyad.shortcut.users.test.gen.userEntities
 import io.averkhoglyad.shortcut.users.test.gen.users
-import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -32,7 +32,7 @@ class UserServiceTest : FreeSpec({
         clearAllMocks()
     }
 
-    val service = UserService(
+    val service = UserServiceImpl(
         repository = repository,
         converter = converter,
         userCreatedMessageFactory = userCreatedMessageFactory,
@@ -50,7 +50,7 @@ class UserServiceTest : FreeSpec({
             val result = service.find(id)
 
             // then
-            result shouldBe NotFound(id)
+            result shouldBe NotFound
             
             verify { repository.findById(id) }
             confirmVerified(repository)
@@ -84,8 +84,8 @@ class UserServiceTest : FreeSpec({
             val entity = userEntities.next()
             val input = users.next().copy(id = null)
             val output = users.next()
-            val sendNotificationMessage = mockk<Message<EmailMessage>>()
-            val userCreatedMessage = mockk<Message<User>>()
+            val sendNotificationMessage = mockk<OutboxMessage<EmailMessage>>()
+            val userCreatedMessage = mockk<OutboxMessage<User>>()
 
             every { repository.save(any()) } returns entity
             every { converter.toEntity(any()) } returns entity
@@ -128,7 +128,7 @@ class UserServiceTest : FreeSpec({
             val result = service.update(user)
 
             // then
-            result shouldBe NotFound(id)
+            result shouldBe NotFound
 
             verify { repository.findById(id) }
             confirmVerified(repository)

@@ -18,7 +18,7 @@ class SendCommandHandler(
             "spring.json.value.default.type=io.averkhoglyad.shortcut.mail.sender.core.mailer.EmailMessage"
         ]
     )
-    fun handleTaskCreated(@Header("X-Event-Id") eventId: String, message: EmailMessage) {
+    fun handleMailerCommand(@Header("X-Event-Id") eventId: String, message: EmailMessage) {
         service.send(eventId, message)
     }
 }

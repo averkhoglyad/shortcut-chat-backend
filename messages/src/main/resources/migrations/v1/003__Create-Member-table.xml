@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1743945766852-1" author="a.v.verkhoglyad">
+        <createTable tableName="chat_members">
+            <column name="chat_id" type="${uuidType}">
+                <constraints primaryKey="true" primaryKeyName="pk_chat_members"/>
+            </column>
+            <column name="user_id" type="${uuidType}">
+                <constraints primaryKey="true" primaryKeyName="pk_chat_members"/>
+            </column>
+            <column name="created_at" type="${timestampType}">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1743945766852-2" author="a.v.verkhoglyad">
+        <createIndex indexName="ix_chat_members__chat_id" tableName="chat_members">
+            <column name="chat_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="1743945766852-3" author="a.v.verkhoglyad">
+        <createIndex indexName="ix_chat_members__user_id" tableName="chat_members">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="1743945766852-4" author="a.v.verkhoglyad">
+        <addForeignKeyConstraint constraintName="fk_chat_members__chats"
+                                 baseTableName="chat_members" baseColumnNames="chat_id"
+                                 referencedTableName="chats" referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="1743945766852-5" author="a.v.verkhoglyad">
+        <addForeignKeyConstraint constraintName="fk_chat_members__users"
+                                 baseTableName="chat_members" baseColumnNames="user_id"
+                                 referencedTableName="users" referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="1743945766852-6" author="a.v.verkhoglyad">
+        <tagDatabase tag="version-003"/>
+    </changeSet>
+
+</databaseChangeLog>

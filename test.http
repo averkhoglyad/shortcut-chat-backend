@@ -1,7 +1,22 @@
 GET {{ usersAppUrl }}/actuator/health
 
 ###
+GET {{ usersAppUrl }}/actuator/configprops
+
+###
+GET {{ mailerAppUrl }}/actuator/health
+
+###
 GET {{ mailerAppUrl }}/actuator/configprops
+
+###
+GET {{ chatsAppUrl }}/actuator/health
+
+###
+GET {{ messagesAppUrl }}/actuator/health
+
+###
+GET {{ notificationsAppUrl}}/actuator/health
 
 ###
 
@@ -73,3 +88,55 @@ GET {{ usersAppUrl }}/users/{{ userId }}
         client.assert(response.body['email'] == client.global.get('email'), "Wrong email")
     })
 %}
+
+### Get chats by user id
+
+GET {{ chatsAppUrl }}/chats
+X-User-Id: 01966d98-ff1a-7671-a4ca-5757ce0cb04a
+
+### Create Chat
+
+POST {{ chatsAppUrl }}/chats
+Content-Type: application/json
+X-User-Id: 01966d98-ff1a-7671-a4ca-5757ce0cb04a
+
+{
+  "name": "Some chat {{ $random.integer() }}",
+  "members": [
+    {
+      "id": "01966d98-ff1a-7671-a4ca-5757ce0cb04a"
+    },
+    {
+      "id": "0196b015-db4c-7c0e-be11-6800924f686f"
+    }
+  ]
+}
+
+
+> {%
+    client.global.set('chatId', response.body['id'])
+%}
+
+###
+GET {{ chatsAppUrl }}/chats
+X-User-Id: 01966d98-ff1a-7671-a4ca-5757ce0cb04a
+
+###
+GET {{ chatsAppUrl }}/chats/01966dce-0466-780b-8606-ae07e1a81776
+X-User-Id: 01966d98-ff1a-7671-a4ca-5757ce0cb04a
+
+###
+GET {{ messagesAppUrl }}/messages?chat=01966dce-0466-780b-8606-ae07e1a81776
+X-User-Id: 01966d98-ff1a-7671-a4ca-5757ce0cb04a
+
+###
+POST {{ messagesAppUrl }}/messages
+Content-Type: application/json
+X-User-Id: 01966d98-ff1a-7671-a4ca-5757ce0cb04a
+
+{
+  "text": "One more message: {{ $random.team.creature }} {{ $random.team.name }}",
+  "chat": {
+    "id": "0196b112-79fb-7de1-b8dc-0632d35988bb"
+  }
+}

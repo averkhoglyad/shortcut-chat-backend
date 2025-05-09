@@ -8,6 +8,8 @@ interface UserRepository: Repository<UserEntity, UUID> {
 
     fun findById(id: UUID): UserEntity?
 
+    fun findByEmail(email: String): UserEntity?
+
     fun save(user: UserEntity): UserEntity
 
 }

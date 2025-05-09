@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1743945255129-1" author="a.v.verkhoglyad">
+        <createTable tableName="chats">
+            <column name="id" type="${uuidType}">
+                <constraints primaryKey="true" primaryKeyName="pk_chats"/>
+            </column>
+            <column name="name" type="${stringType}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_sync_at" type="${timestampType}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_deleted" type="${booleanType}" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1743945255129-2" author="a.v.verkhoglyad">
+        <tagDatabase tag="version-002"/>
+    </changeSet>
+
+</databaseChangeLog>

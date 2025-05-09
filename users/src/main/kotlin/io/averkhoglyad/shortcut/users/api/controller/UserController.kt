@@ -1,6 +1,6 @@
 package io.averkhoglyad.shortcut.users.api.controller
 
-import io.averkhoglyad.shortcut.users.api.util.unwrap
+import io.averkhoglyad.shortcut.common.web.handler.unwrap
 import io.averkhoglyad.shortcut.users.core.model.User
 import io.averkhoglyad.shortcut.users.core.service.UserService
 import org.springframework.web.bind.annotation.*
@@ -15,6 +15,12 @@ class UserController(
     @GetMapping("/{id}")
     fun find(@PathVariable id: UUID): User {
         return service.find(id)
+            .unwrap()
+    }
+
+    @GetMapping("/by-email")
+    fun find(@RequestParam email: String): User {
+        return service.findByEmail(email)
             .unwrap()
     }
 

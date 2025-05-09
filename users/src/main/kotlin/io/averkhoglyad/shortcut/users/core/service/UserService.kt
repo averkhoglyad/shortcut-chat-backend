@@ -1,37 +1,54 @@
 package io.averkhoglyad.shortcut.users.core.service
 
+import io.averkhoglyad.shortcut.common.data.EntityResult
+import io.averkhoglyad.shortcut.common.util.slf4j
 import io.averkhoglyad.shortcut.users.core.converter.UserConverter
-import io.averkhoglyad.shortcut.users.core.data.EntityResult
 import io.averkhoglyad.shortcut.users.core.model.User
 import io.averkhoglyad.shortcut.users.core.persistence.entity.UserEntity
 import io.averkhoglyad.shortcut.users.core.persistence.repository.UserRepository
 import io.averkhoglyad.shortcut.users.core.service.message.SendCreatedUserNotificationMessageFactoryImpl
 import io.averkhoglyad.shortcut.users.core.service.message.UserCreatedMessageFactoryImpl
-import io.averkhoglyad.shortcut.users.util.slf4j
+import io.averkhoglyad.shortcut.users.outbox.OutboxService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
+interface UserService {
+
+    fun find(id: UUID): EntityResult<User>
+    fun findByEmail(email: String): EntityResult<User>
+    fun create(user: User): EntityResult<User>
+    fun update(user: User): EntityResult<User>
+
+}
+
 @Service
-class UserService(
+class UserServiceImpl(
     private val repository: UserRepository,
     private val converter: UserConverter,
     private val userCreatedMessageFactory: UserCreatedMessageFactoryImpl,
     private val sendCreatedUserNotificationMessageFactory: SendCreatedUserNotificationMessageFactoryImpl,
     private val messageOutboxService: OutboxService
-) {
+): UserService {
 
     private val logger by slf4j()
 
     @Transactional(readOnly = true)
-    fun find(id: UUID): EntityResult<User> {
+    override fun find(id: UUID): EntityResult<User> {
         return repository.findById(id)
             ?.let { EntityResult.Success(it.toModel()) }
-            ?: EntityResult.NotFound(id)
+            ?: EntityResult.NotFound
+    }
+
+    @Transactional(readOnly = true)
+    override fun findByEmail(email: String): EntityResult<User> {
+        return repository.findByEmail(email)
+            ?.let { EntityResult.Success(it.toModel()) }
+            ?: EntityResult.NotFound
     }
 
     @Transactional
-    fun create(user: User): EntityResult<User> {
+    override fun create(user: User): EntityResult<User> {
         require(user.id == null)
 
         return repository.save(user.toEntity())
@@ -63,11 +80,11 @@ class UserService(
     }
 
     @Transactional
-    fun update(user: User): EntityResult<User> {
+    override fun update(user: User): EntityResult<User> {
         requireNotNull(user.id)
 
         val entity = repository.findById(user.id)
-            ?: return EntityResult.NotFound(user.id)
+            ?: return EntityResult.NotFound
 
         return repository.save(user.toEntity(entity))
             .toModel()

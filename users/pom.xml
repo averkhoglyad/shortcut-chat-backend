@@ -5,20 +5,21 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.averkhoglyad</groupId>
-        <artifactId>shortcut-task</artifactId>
-        <version>0.0.3-SNAPSHOT</version>
+        <artifactId>shortcut-chat-backend</artifactId>
+        <version>0.0.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>users</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
+            <groupId>io.averkhoglyad</groupId>
+            <artifactId>common</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-reflect</artifactId>
+            <artifactId>kotlin-stdlib</artifactId>
         </dependency>
 
         <dependency>
@@ -77,9 +78,36 @@
 
         <!-- Test -->
         <dependency>
+            <groupId>io.averkhoglyad</groupId>
+            <artifactId>common-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.junit.jupiter</groupId>
+                    <artifactId>junit-jupiter</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-junit-jupiter</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.assertj</groupId>
+                    <artifactId>assertj-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -110,6 +138,11 @@
         <dependency>
             <groupId>io.kotest.extensions</groupId>
             <artifactId>kotest-extensions-spring</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.kotest.extensions</groupId>
+            <artifactId>kotest-extensions-testcontainers</artifactId>
             <scope>test</scope>
         </dependency>
 
