@@ -12,3 +12,5 @@ val UUID.isMax
     get() = this == UUID_MAX_VALUE
 val UUID.isZero
     get() = this == UUID_ZERO_VALUE
+
+fun String.toUUID(): UUID = UUID.fromString(this)

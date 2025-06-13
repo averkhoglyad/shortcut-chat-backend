@@ -30,11 +30,13 @@ class NotificationSubscriptionHandler(
         val userId = req.queryParamOrNull("userId")
             ?.let { UUID.fromString(it) }
             ?: throw IllegalArgumentException("User ID header must be passed")
+
         val events = service.events()
             .map { events ->
                 events
                     .filter { el -> el.event is DebugEvent || el.members.any { it.id == userId } }
                     .map { it.event }
+                    .sortedBy { it.createdAt }
                     .let { EventsResponse(it) }
             }
             .onStart { log.info("started") }

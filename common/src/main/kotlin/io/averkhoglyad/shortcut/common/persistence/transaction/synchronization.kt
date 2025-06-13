@@ -9,12 +9,10 @@ private typealias Runnable = () -> Unit
 private typealias Consumer<T> = (T) -> Unit
 
 fun transaction(prepare: Synchronization.() -> Unit) {
-    if (!isActualTransactionActive()) {
-        return
-    }
-    val builder = SynchronizationBuilder()
-    builder.prepare()
-    registerSynchronization(builder.build())
+    SynchronizationBuilder()
+        .apply { prepare() }
+        .build()
+        .let { registerSynchronization(it) }
 }
 
 interface Synchronization {

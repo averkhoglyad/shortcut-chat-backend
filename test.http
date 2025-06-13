@@ -135,7 +135,7 @@ Content-Type: application/json
 X-User-Id: 01966d98-ff1a-7671-a4ca-5757ce0cb04a
 
 {
-  "text": "One more message: {{ $random.team.creature }} {{ $random.team.name }}",
+  "text": "One more message: {{ $random.team.name }}'s {{ $random.team.creature }}",
   "chat": {
     "id": "0196b112-79fb-7de1-b8dc-0632d35988bb"
   }

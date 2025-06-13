@@ -10,7 +10,7 @@ import java.time.Clock
 import java.util.UUID
 
 @Component
-class ChatCreatedMessageFactoryImpl(
+class MessageCreatedMessageFactoryImpl(
     @Value("ChatLifecycle")
     private val topic: String,
     @Value("v1")

@@ -24,12 +24,12 @@ class ChatLifecycleEventsHandler(
     private val log by slf4j()
 
     @KafkaHandler
-    fun handleChatCreated(event: ChatLifecycleEvent) {
+    suspend fun handleChatLifecycleEvent(event: ChatLifecycleEvent) {
         service.handleEvent(event)
     }
 
     @KafkaHandler(isDefault = true)
-    fun handleUnknown(
+    suspend fun handleUnknown(
         @Payload payload: Map<String, Any?>,
         @Header(name = EVENT_NAME, required = false, defaultValue = "") eventNameHeader: String
     ) {

@@ -15,7 +15,9 @@ class ChatMembersController(
 ) {
 
     @GetMapping
-    fun members(@RequestParam("chatId") chatIds: Collection<UUID>): Collection<ChatMembers> {
-        return service.findMembersByIds(chatIds)
+    fun members(@RequestParam(name = "chatId", required = false) chatIds: Collection<UUID> = emptyList()): Collection<ChatMembers> {
+        return takeIf { chatIds.isNotEmpty() }
+            ?.let{ service.findMembersByIds(chatIds) }
+            ?: emptyList()
     }
 }

@@ -3,7 +3,7 @@ spring:
     name: notification-app
 
   lifecycle:
-    timeout-per-shutdown-phase: 1m
+    timeout-per-shutdown-phase: 10s
 
   kafka:
     bootstrap-servers: localhost:9092
@@ -21,6 +21,9 @@ spring:
 
 server:
   shutdown: graceful
+
+notifications:
+  window-duration: 1m
 
 integrations:
   chat-service:

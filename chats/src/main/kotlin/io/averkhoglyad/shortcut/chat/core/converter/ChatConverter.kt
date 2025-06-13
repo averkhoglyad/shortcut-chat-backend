@@ -19,14 +19,16 @@ interface ChatConverter {
 
     fun toEntity(chat: ChatRequest, entity: ChatEntity): ChatEntity
 
-    fun toDetails(entity: ChatEntity): ChatDetails
+    fun toDetails(entity: ChatEntity, memberUsers: Collection<UserEntity>): ChatDetails
 
     fun toListItem(entity: ChatEntity): ChatListItem
 
 }
 
 @Component
-class ChatConverterImpl : ChatConverter {
+class ChatConverterImpl(
+    private val userConverter: UserConverter,
+) : ChatConverter {
 
     override fun toEntity(chat: ChatRequest): ChatEntity {
         return toEntity(chat, ChatEntity())
@@ -49,12 +51,12 @@ class ChatConverterImpl : ChatConverter {
         )
     }
 
-    override fun toDetails(entity: ChatEntity): ChatDetails {
+    override fun toDetails(entity: ChatEntity, memberUsers: Collection<UserEntity>): ChatDetails {
         return ChatDetails(
             id = requireNotNull(entity.id),
             name = entity.name,
-            owner = null, // TODO:
-            members = emptySet(), // TODO:
+            owner = entity.owner?.id?.let{ oid -> userConverter.toDetails(memberUsers.first { it.id == oid }) },
+            members = memberUsers.map { userConverter.toDetails(it) },
             createdAt = entity.createdAt,
         )
     }

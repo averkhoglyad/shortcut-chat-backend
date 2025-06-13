@@ -16,8 +16,6 @@
         <module>messages</module>
         <module>notifications</module>
         <module>users</module>
-        <module>jmeter-test</module>
-        <module>react-sample</module>
     </modules>
 
     <properties>

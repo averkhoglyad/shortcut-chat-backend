@@ -11,24 +11,19 @@ import java.util.UUID
 
 interface ChatRepository : Repository<ChatEntity, UUID> {
 
-    @Transactional(readOnly = true)
     fun findById(id: UUID): ChatEntity?
 
-    @Transactional
     fun save(chat: ChatEntity): ChatEntity
 
-    @Transactional(readOnly = true)
     @Query("select distinct c.* from chats c inner join chat_members m on m.chat_id=c.id where m.user_id=:userId")
     fun findByMembersContainsOrderById(@Param("userId") userId: UUID,
                                        pageable: Pageable): List<ChatEntity>
 
-    @Transactional(readOnly = true)
     @Query("select distinct c.* from chats c inner join chat_members m on m.chat_id=c.id where m.user_id=:userId and c.id>:chatId")
     fun findByMembersContainsAndIdGreaterThanOrderById(@Param("userId") userId: UUID,
                                                        @Param("chatId") chatId: UUID,
                                                        pageable: Pageable): List<ChatEntity>
 
-    @Transactional(readOnly = true)
-    @Query("select m.* from chat_members m where m.chat_id=:chatIds")
-    fun findMembersByChatIdIsIn(chatIds: Collection<UUID>): List<MemberEntity>
+    @Query("select m.* from chat_members m where m.chat_id IN (:chatIds)")
+    fun findMembersByChatIdIsIn(@Param("chatIds") chatIds: Collection<UUID>): List<MemberEntity>
 }

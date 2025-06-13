@@ -1,6 +1,0 @@
-spring:
-  application:
-    name: flux-test-app
-
-server:
-  port: 9000

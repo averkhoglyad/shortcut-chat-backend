@@ -2,16 +2,20 @@ package io.averkhoglyad.shortcut.notification.integration
 
 import io.averkhoglyad.shortcut.notification.data.ChatMembers
 import io.averkhoglyad.shortcut.notification.data.UserRef
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.reactive.asFlow
 import org.springframework.lang.NonNull
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.service.annotation.GetExchange
 import org.springframework.web.service.annotation.HttpExchange
+import reactor.core.publisher.Flux
 import java.util.*
 
 interface ChatRepository {
 
-    fun members(chatIds: Collection<UUID>): Map<UUID, Collection<UserRef>>
+    fun members(chatIds: Collection<UUID>): Flow<Map<UUID, Collection<UserRef>>>
 
 }
 
@@ -20,15 +24,17 @@ class ChatRepositoryImpl(
     private val chatMembersEndpoint: ChatMembersEndpoint
 ): ChatRepository {
 
-    override fun members(chatIds: Collection<UUID>): Map<UUID, Collection<UserRef>> {
+    override fun members(chatIds: Collection<UUID>): Flow<Map<UUID, Collection<UserRef>>> {
         return chatMembersEndpoint.members(chatIds)
-            .associate { it -> it.id to it.members }
+            .map { it.associate { it -> it.id to it.members } }
     }
 }
 
 @HttpExchange("/members")
 interface ChatMembersEndpoint {
+
     @GetExchange
     @NonNull
-    fun members(@RequestParam("chatId") chatIds: Collection<UUID>): Collection<ChatMembers>
+    fun members(@RequestParam("chatId") chatIds: Collection<UUID>): Flow<Collection<ChatMembers>>
+
 }

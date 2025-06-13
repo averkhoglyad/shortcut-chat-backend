@@ -19,7 +19,7 @@ class DebugConfig(
     init {
         CoroutineScope(SupervisorJob()).launch {
             tickerFlow(5.seconds)
-                .collect { service.handleEvent(DebugEvent) }
+                .collect { service.handleEvent(DebugEvent()) }
         }
     }
 }

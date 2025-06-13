@@ -7,21 +7,24 @@ import java.util.*
 
 sealed interface ChatLifecycleEvent {
     val chat: ChatRef
+    val createdAt: Instant
+
     @get:JsonGetter("@type")
     val type: String
         get() = this.javaClass.simpleName
 }
 
-object DebugEvent: ChatLifecycleEvent {
-    override val chat: ChatRef = ChatRef(UUID_ZERO_VALUE)
-}
+class DebugEvent(
+    override val chat: ChatRef = ChatRef(UUID_ZERO_VALUE),
+    override val createdAt: Instant = Instant.now(),
+): ChatLifecycleEvent
 
 data class ChatCreated(
     val id: UUID,
     val name: String,
     val owner: UserRef?,
     val members: Collection<UserRef>,
-    val createdAt: Instant,
+    override val createdAt: Instant,
 ) : ChatLifecycleEvent {
     override val chat: ChatRef = ChatRef(id)
 }
@@ -31,7 +34,7 @@ data class MessagePublished(
     val text: String,
     override val chat: ChatRef,
     val author: UserRef,
-    val createdAt: Instant,
+    override val createdAt: Instant,
 ) : ChatLifecycleEvent
 
 data class ChatRef(val id: UUID)

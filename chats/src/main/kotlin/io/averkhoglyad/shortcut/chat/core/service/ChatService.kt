@@ -8,7 +8,9 @@ import io.averkhoglyad.shortcut.chat.core.model.ChatMembers
 import io.averkhoglyad.shortcut.chat.core.model.ChatRequest
 import io.averkhoglyad.shortcut.chat.core.model.UserRef
 import io.averkhoglyad.shortcut.chat.core.persistence.entity.ChatEntity
+import io.averkhoglyad.shortcut.chat.core.persistence.entity.UserEntity
 import io.averkhoglyad.shortcut.chat.core.persistence.repository.ChatRepository
+import io.averkhoglyad.shortcut.chat.core.persistence.repository.UserRepository
 import io.averkhoglyad.shortcut.chat.core.service.message.MessageFactory
 import io.averkhoglyad.shortcut.chat.outbox.OutboxService
 import io.averkhoglyad.shortcut.common.data.EntityResult
@@ -36,6 +38,7 @@ class ChatServiceImpl(
     private val repository: ChatRepository,
     private val outboxService: OutboxService,
     private val chatCreatedMessageFactory: MessageFactory<ChatDetails, ChatCreatedEvent>,
+    private val userRepository: UserRepository,
 ) : ChatService {
 
     override fun listForUser(userId: UUID, pageSize: Int): List<ChatListItem> {
@@ -50,7 +53,8 @@ class ChatServiceImpl(
 
     override fun findById(chatId: UUID): EntityResult<ChatDetails> {
         return repository.findById(chatId)
-            ?.toDetails()
+            ?.let { it to userRepository.findByIdIsIn(it.memberIds) }
+            ?.let { (entity, members) -> entity.toDetails(members) }
             ?.let { EntityResult.Success(it) }
             ?: EntityResult.NotFound
     }
@@ -58,12 +62,16 @@ class ChatServiceImpl(
     @Transactional
     override fun create(chat: ChatRequest): EntityResult<ChatDetails> {
         return repository.save(chat.toEntity())
-            .toDetails()
+            .let { it to userRepository.findByIdIsIn(it.memberIds) }
+            .let { (entity, members) -> entity.toDetails(members) }
             .also { emitChatCreatedLifecycleEvent(it) }
             .let { EntityResult.Success(it) }
     }
 
     override fun findMembersByIds(chatIds: Collection<UUID>): List<ChatMembers> {
+        if (chatIds.isEmpty()) {
+            return emptyList()
+        }
         return repository.findMembersByChatIdIsIn(chatIds)
             .groupBy { it.chat.id }
             .map { (chatId, entity) ->
@@ -80,8 +88,11 @@ class ChatServiceImpl(
 
     private fun ChatRequest.toEntity(): ChatEntity = converter.toEntity(this)
 
-    private fun ChatEntity.toDetails(): ChatDetails = converter.toDetails(this)
+    private fun ChatEntity.toDetails(memberUsers: Collection<UserEntity>): ChatDetails =
+        converter.toDetails(this, memberUsers)
 
     private fun ChatEntity.toListItem(): ChatListItem = converter.toListItem(this)
 }
 
+private val ChatEntity.memberIds: Collection<UUID>
+    get() = members.mapNotNull { it.user.id }

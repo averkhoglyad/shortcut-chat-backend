@@ -17,7 +17,7 @@ import java.util.UUID
 
 @RestController
 @RequestMapping("messages")
-class ChatController(
+class MessageController(
     private val service: MessageService
 ) {
 
