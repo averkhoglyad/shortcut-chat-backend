@@ -7,7 +7,6 @@ import io.averkhoglyad.shortcut.mail.sender.core.persistence.MessageRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.MailSender
 import org.springframework.stereotype.Service
-import java.time.Clock
 import java.time.Instant
 
 @Service

@@ -1,6 +1,6 @@
 package io.averkhoglyad.shortcut.users.core.model
 
-import java.util.UUID
+import java.util.*
 
 data class User(
     val id: UUID?,

@@ -1,9 +1,9 @@
 package io.averkhoglyad.shortcut.message.core.persistence.repository
 
-import io.averkhoglyad.shortcut.message.TestcontainersConfiguration
 import io.averkhoglyad.shortcut.common.test.asInstantColumn
 import io.averkhoglyad.shortcut.common.test.betweenInclusive
 import io.averkhoglyad.shortcut.common.test.executeSql
+import io.averkhoglyad.shortcut.message.TestcontainersConfiguration
 import io.averkhoglyad.shortcut.message.config.PersistenceConfig
 import io.averkhoglyad.shortcut.message.core.persistence.entity.UserEntity
 import io.averkhoglyad.shortcut.message.core.persistence.repository.util.loadUserRow

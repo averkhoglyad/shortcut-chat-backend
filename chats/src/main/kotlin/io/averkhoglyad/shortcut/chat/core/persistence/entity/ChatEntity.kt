@@ -9,7 +9,7 @@ import org.springframework.data.relational.core.mapping.InsertOnlyProperty
 import org.springframework.data.relational.core.mapping.MappedCollection
 import org.springframework.data.relational.core.mapping.Table
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 @Table("chats")
 class ChatEntity : IdentifiedEntity<UUID> {

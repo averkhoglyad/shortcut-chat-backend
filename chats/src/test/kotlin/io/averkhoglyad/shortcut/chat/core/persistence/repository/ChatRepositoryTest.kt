@@ -2,7 +2,6 @@ package io.averkhoglyad.shortcut.chat.core.persistence.repository
 
 import io.averkhoglyad.shortcut.chat.TestcontainersConfiguration
 import io.averkhoglyad.shortcut.chat.config.PersistenceConfig
-import io.averkhoglyad.shortcut.common.test.asInstantColumn
 import io.averkhoglyad.shortcut.common.test.betweenInclusive
 import io.averkhoglyad.shortcut.common.test.executeSql
 import io.averkhoglyad.shortcut.common.test.shouldBeEqual
@@ -10,7 +9,6 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.collections.shouldBeSameSizeAs
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.date.shouldBeCloseTo
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.maps.shouldContain
 import io.kotest.matchers.nulls.shouldBeNull
@@ -27,10 +25,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
 import org.springframework.context.annotation.Import
 import org.springframework.jdbc.core.simple.JdbcClient
-import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
-import kotlin.time.Duration.Companion.milliseconds
 
 private const val INIT = "/repository/chat/init.sql"
 private const val CLEAR = "/repository/chat/clear.sql"

@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
 import java.time.Clock
-import kotlin.collections.mapNotNull
 
 // TODO: Must be moved to some common transactional-outbox lib
 interface MessageOutboxHandler {

@@ -1,7 +1,7 @@
 package io.averkhoglyad.shortcut.chat.core.model
 
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 data class ChatCreatedEvent(
     val id: UUID,

@@ -1,6 +1,6 @@
 package io.averkhoglyad.shortcut.common.util
 
-import java.util.UUID
+import java.util.*
 
 val UUID_ZERO_VALUE = UUID(0, 0)
 val UUID_MIN_VALUE = UUID(Long.MIN_VALUE, Long.MIN_VALUE)

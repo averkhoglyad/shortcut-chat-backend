@@ -1,14 +1,14 @@
 package io.averkhoglyad.shortcut.users.core.service
 
-import io.averkhoglyad.shortcut.users.core.converter.UserConverter
-import io.averkhoglyad.shortcut.users.core.model.EmailMessage
 import io.averkhoglyad.shortcut.common.data.EntityResult.NotFound
 import io.averkhoglyad.shortcut.common.data.EntityResult.Success
-import io.averkhoglyad.shortcut.users.outbox.OutboxMessage
+import io.averkhoglyad.shortcut.users.core.converter.UserConverter
+import io.averkhoglyad.shortcut.users.core.model.EmailMessage
 import io.averkhoglyad.shortcut.users.core.model.User
 import io.averkhoglyad.shortcut.users.core.persistence.repository.UserRepository
 import io.averkhoglyad.shortcut.users.core.service.message.SendCreatedUserNotificationMessageFactoryImpl
 import io.averkhoglyad.shortcut.users.core.service.message.UserCreatedMessageFactoryImpl
+import io.averkhoglyad.shortcut.users.outbox.OutboxMessage
 import io.averkhoglyad.shortcut.users.outbox.OutboxService
 import io.averkhoglyad.shortcut.users.test.gen.userEntities
 import io.averkhoglyad.shortcut.users.test.gen.users

@@ -1,6 +1,5 @@
 package io.averkhoglyad.shortcut.message.core.service
 
-import io.averkhoglyad.shortcut.message.core.persistence.entity.ChatEntity
 import io.averkhoglyad.shortcut.common.data.EntityResult
 import io.averkhoglyad.shortcut.common.persistence.transaction.transaction
 import io.averkhoglyad.shortcut.message.core.converter.MessageConverter
@@ -8,14 +7,14 @@ import io.averkhoglyad.shortcut.message.core.model.Message
 import io.averkhoglyad.shortcut.message.core.model.MessageRequest
 import io.averkhoglyad.shortcut.message.core.model.UserRef
 import io.averkhoglyad.shortcut.message.core.output.EventPublisher
+import io.averkhoglyad.shortcut.message.core.persistence.entity.ChatEntity
 import io.averkhoglyad.shortcut.message.core.persistence.entity.MessageEntity
-import io.averkhoglyad.shortcut.message.core.persistence.repository.ChatRepository
 import io.averkhoglyad.shortcut.message.core.persistence.repository.MessageRepository
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jdbc.core.mapping.AggregateReference
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.UUID
+import java.util.*
 
 interface MessageService {
 

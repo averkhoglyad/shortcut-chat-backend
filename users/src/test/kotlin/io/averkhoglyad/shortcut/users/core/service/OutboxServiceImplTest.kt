@@ -1,9 +1,9 @@
 package io.averkhoglyad.shortcut.users.core.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.averkhoglyad.shortcut.users.outbox.OutboxMessage
 import io.averkhoglyad.shortcut.users.core.persistence.entity.OutboxMessageEntity
 import io.averkhoglyad.shortcut.users.core.persistence.repository.OutboxMessageRepository
+import io.averkhoglyad.shortcut.users.outbox.OutboxMessage
 import io.averkhoglyad.shortcut.users.outbox.OutboxServiceImpl
 import io.averkhoglyad.shortcut.users.test.firstArg
 import io.kotest.core.spec.style.FreeSpec

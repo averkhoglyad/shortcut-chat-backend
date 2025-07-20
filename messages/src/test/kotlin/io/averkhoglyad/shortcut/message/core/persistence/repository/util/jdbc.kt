@@ -1,7 +1,7 @@
 package io.averkhoglyad.shortcut.message.core.persistence.repository.util
 
 import org.springframework.jdbc.core.simple.JdbcClient
-import java.util.UUID
+import java.util.*
 
 
 fun JdbcClient.loadUserRow(id: UUID): Map<String, Any?>? =

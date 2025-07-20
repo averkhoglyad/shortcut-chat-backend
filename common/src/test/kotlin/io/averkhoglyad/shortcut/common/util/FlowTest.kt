@@ -4,7 +4,6 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSingleElement
 import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.ints.shouldBeInRange
 import io.kotest.matchers.ints.shouldBeZero
 import io.kotest.matchers.shouldBe
@@ -22,7 +21,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.DurationUnit
 import kotlin.time.DurationUnit.MILLISECONDS
 
 @OptIn(ExperimentalCoroutinesApi::class)

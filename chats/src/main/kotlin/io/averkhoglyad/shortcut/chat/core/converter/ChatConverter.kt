@@ -3,7 +3,6 @@ package io.averkhoglyad.shortcut.chat.core.converter
 import io.averkhoglyad.shortcut.chat.core.model.ChatDetails
 import io.averkhoglyad.shortcut.chat.core.model.ChatListItem
 import io.averkhoglyad.shortcut.chat.core.model.ChatRequest
-import io.averkhoglyad.shortcut.chat.core.model.User
 import io.averkhoglyad.shortcut.chat.core.model.UserRef
 import io.averkhoglyad.shortcut.chat.core.persistence.entity.ChatEntity
 import io.averkhoglyad.shortcut.chat.core.persistence.entity.MemberEntity
@@ -11,7 +10,7 @@ import io.averkhoglyad.shortcut.chat.core.persistence.entity.UserEntity
 import org.springframework.data.jdbc.core.mapping.AggregateReference
 import org.springframework.stereotype.Component
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 interface ChatConverter {
 

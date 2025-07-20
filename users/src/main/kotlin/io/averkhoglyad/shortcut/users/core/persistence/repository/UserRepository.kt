@@ -2,7 +2,7 @@ package io.averkhoglyad.shortcut.users.core.persistence.repository
 
 import io.averkhoglyad.shortcut.users.core.persistence.entity.UserEntity
 import org.springframework.data.repository.Repository
-import java.util.UUID
+import java.util.*
 
 interface UserRepository: Repository<UserEntity, UUID> {
 

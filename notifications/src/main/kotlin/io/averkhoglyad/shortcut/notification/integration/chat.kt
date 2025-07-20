@@ -4,13 +4,10 @@ import io.averkhoglyad.shortcut.notification.data.ChatMembers
 import io.averkhoglyad.shortcut.notification.data.UserRef
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.reactive.asFlow
-import org.springframework.lang.NonNull
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.service.annotation.GetExchange
 import org.springframework.web.service.annotation.HttpExchange
-import reactor.core.publisher.Flux
 import java.util.*
 
 interface ChatRepository {

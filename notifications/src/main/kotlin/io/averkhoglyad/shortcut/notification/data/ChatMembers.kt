@@ -1,6 +1,6 @@
 package io.averkhoglyad.shortcut.notification.data
 
-import java.util.UUID
+import java.util.*
 
 data class ChatMembers(
     val id: UUID,

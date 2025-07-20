@@ -14,7 +14,6 @@ import io.kotest.matchers.maps.shouldContainKeys
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.header.Headers
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc

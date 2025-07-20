@@ -1,15 +1,12 @@
 package io.averkhoglyad.shortcut.message.core.persistence.repository
 
-import io.averkhoglyad.shortcut.message.TestcontainersConfiguration
-import io.averkhoglyad.shortcut.common.test.asInstantColumn
-import io.averkhoglyad.shortcut.common.test.betweenInclusive
 import io.averkhoglyad.shortcut.common.test.executeSql
+import io.averkhoglyad.shortcut.message.TestcontainersConfiguration
 import io.averkhoglyad.shortcut.message.config.PersistenceConfig
 import io.averkhoglyad.shortcut.message.core.persistence.repository.util.countChatMessageRows
 import io.averkhoglyad.shortcut.message.core.persistence.repository.util.loadMessageRow
 import io.averkhoglyad.shortcut.message.core.persistence.repository.util.messageEntities
 import io.kotest.core.spec.style.FreeSpec
-import io.kotest.matchers.date.shouldBeCloseTo
 import io.kotest.matchers.maps.shouldContain
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -22,8 +19,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.context.annotation.Import
 import org.springframework.jdbc.core.simple.JdbcClient
 import java.time.Instant
-import java.util.UUID
-import kotlin.time.Duration.Companion.milliseconds
+import java.util.*
 
 private const val INIT = "/repository/message/init.sql"
 private const val CLEAR = "/repository/message/clear.sql"

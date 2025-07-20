@@ -11,7 +11,7 @@ import io.kotest.property.arbitrary.*
 import io.kotest.property.exhaustive.of
 import org.springframework.data.jdbc.core.mapping.AggregateReference
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 fun Arb.Companion.userEntities(
     ids: Gen<UUID?> = Exhaustive.of(null),

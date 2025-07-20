@@ -2,12 +2,11 @@ package io.averkhoglyad.shortcut.message.core.persistence.repository
 
 import io.averkhoglyad.shortcut.message.core.persistence.entity.ChatEntity
 import io.averkhoglyad.shortcut.message.core.persistence.entity.MessageEntity
-import io.averkhoglyad.shortcut.message.core.persistence.entity.UserEntity
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jdbc.core.mapping.AggregateReference
 import org.springframework.data.repository.Repository
 import org.springframework.transaction.annotation.Transactional
-import java.util.UUID
+import java.util.*
 
 interface MessageRepository : Repository<MessageEntity, UUID> {
 

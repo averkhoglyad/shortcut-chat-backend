@@ -1,12 +1,7 @@
 package io.averkhoglyad.shortcut.chat.core.service
 
 import io.averkhoglyad.shortcut.chat.core.converter.ChatConverter
-import io.averkhoglyad.shortcut.chat.core.model.ChatCreatedEvent
-import io.averkhoglyad.shortcut.chat.core.model.ChatDetails
-import io.averkhoglyad.shortcut.chat.core.model.ChatListItem
-import io.averkhoglyad.shortcut.chat.core.model.ChatMembers
-import io.averkhoglyad.shortcut.chat.core.model.ChatRequest
-import io.averkhoglyad.shortcut.chat.core.model.UserRef
+import io.averkhoglyad.shortcut.chat.core.model.*
 import io.averkhoglyad.shortcut.chat.core.persistence.entity.ChatEntity
 import io.averkhoglyad.shortcut.chat.core.persistence.entity.UserEntity
 import io.averkhoglyad.shortcut.chat.core.persistence.repository.ChatRepository
@@ -17,7 +12,7 @@ import io.averkhoglyad.shortcut.common.data.EntityResult
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.UUID
+import java.util.*
 
 interface ChatService {
 

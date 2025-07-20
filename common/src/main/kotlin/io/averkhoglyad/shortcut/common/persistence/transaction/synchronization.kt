@@ -2,7 +2,6 @@ package io.averkhoglyad.shortcut.common.persistence.transaction
 
 import org.springframework.core.Ordered
 import org.springframework.transaction.support.TransactionSynchronization
-import org.springframework.transaction.support.TransactionSynchronizationManager.isActualTransactionActive
 import org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization
 
 private typealias Runnable = () -> Unit

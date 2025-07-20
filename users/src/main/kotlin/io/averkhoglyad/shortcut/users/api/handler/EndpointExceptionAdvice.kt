@@ -1,7 +1,7 @@
 package io.averkhoglyad.shortcut.users.api.handler
 
-import io.averkhoglyad.shortcut.common.web.exception.EndpointException
 import io.averkhoglyad.shortcut.common.util.slf4j
+import io.averkhoglyad.shortcut.common.web.exception.EndpointException
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.*
 import org.springframework.http.ProblemDetail

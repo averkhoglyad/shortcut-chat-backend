@@ -7,7 +7,6 @@ import io.kotest.extensions.spring.testContextManager
 import org.springframework.context.ApplicationContext
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator
-import org.springframework.util.ResourceUtils
 import org.springframework.util.ResourceUtils.CLASSPATH_URL_PREFIX
 import javax.sql.DataSource
 
