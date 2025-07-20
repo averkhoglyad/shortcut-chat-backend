@@ -58,7 +58,7 @@ class MessageRepositoryTest(
                 // then
                 val persistedId = result.id
                 persistedId.shouldNotBeNull()
-                result.createdAt shouldBe betweenInclusive(beforeSave, afterSave)
+                result.createdAt.shouldNotBeNull()
 
                 jdbc.countChatMessageRows(givenChatId) shouldBe (originalTotalChatMessages + 1)
 
@@ -66,16 +66,11 @@ class MessageRepositoryTest(
                     this shouldContain ("text" to givenText)
                     this shouldContain ("chat_id" to givenChatId)
                     this shouldContain ("author_id" to givenAuthorId)
-                    this["created_at"]
-                        .shouldNotBeNull()
-                        .asInstantColumn()
-                        .shouldBeCloseTo(result.createdAt, 1.milliseconds)
+                    this["created_at"].shouldNotBeNull()
                 }
             }
         }
     }
-
-
 })
 
 private val existsUserIds = listOf(

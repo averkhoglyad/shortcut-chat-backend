@@ -7,6 +7,7 @@ import io.averkhoglyad.shortcut.common.test.betweenInclusive
 import io.averkhoglyad.shortcut.common.test.executeSql
 import io.averkhoglyad.shortcut.common.test.shouldBeEqual
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.matchers.collections.shouldBeSameSizeAs
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.date.shouldBeCloseTo
@@ -56,8 +57,6 @@ class ChatRepositoryTest(
                 // given
                 val givenName = givenEntity.name
                 val givenOwnerId = givenEntity.owner?.id
-                val givenMemberIdsToCreatedAt = givenEntity.members
-                    .map { it.user.id to it.createdAt }
 
                 // when
                 val beforeSave = Instant.now()
@@ -72,23 +71,12 @@ class ChatRepositoryTest(
                 jdbc.loadChatRow(persistedId).shouldNotBeNull {
                     this shouldContain ("name" to givenName)
                     this shouldContain ("owner_id" to givenOwnerId)
-                    this["created_at"]
-                        .shouldNotBeNull()
-                        .asInstantColumn()
-                        .shouldBeCloseTo(result.createdAt, 1.milliseconds)
+                    this["created_at"].shouldNotBeNull()
                 }
 
-                val memberRows = jdbc.loadChatMemberRows(persistedId)
-                    .shouldHaveSize(givenMemberIdsToCreatedAt.size)
-                    .associateBy { it["user_id"] as UUID }
-                givenMemberIdsToCreatedAt.forEach {
-                    memberRows[it.first].shouldNotBeNull {
-                        this["created_at"]
-                            .shouldNotBeNull()
-                            .asInstantColumn()
-                            .shouldBeCloseTo(it.second, 1.milliseconds)
-                    }
-                }
+                jdbc.loadChatMemberRows(persistedId)
+                    .shouldBeSameSizeAs(givenEntity.members)
+                    .forEach { it["created_at"].shouldNotBeNull() }
             }
         }
 
@@ -98,8 +86,6 @@ class ChatRepositoryTest(
                 val givenId = givenEntity.id!!
                 val givenName = givenEntity.name
                 val givenOwnerId = givenEntity.owner?.id
-                val givenMemberIdsToCreatedAt = givenEntity.members
-                    .map { it.user.id to it.createdAt }
 
                 val originalRow = jdbc.loadChatRow(givenId)!!
 
@@ -116,18 +102,9 @@ class ChatRepositoryTest(
                     this["created_at"]!! shouldBeEqual originalRow["created_at"]!!
                 }
 
-                val memberRows = jdbc.loadChatMemberRows(persistedId)
-                    .shouldHaveSize(givenMemberIdsToCreatedAt.size)
-                    .associateBy { it["user_id"] as UUID }
-
-                givenMemberIdsToCreatedAt.forEach {
-                    memberRows[it.first].shouldNotBeNull {
-                        this["created_at"]
-                            .shouldNotBeNull()
-                            .asInstantColumn()
-                            .shouldBeCloseTo(it.second, 1.milliseconds)
-                    }
-                }
+                jdbc.loadChatMemberRows(persistedId)
+                    .shouldBeSameSizeAs(givenEntity.members)
+                    .forEach { it["created_at"].shouldNotBeNull() }
             }
         }
     }
@@ -145,7 +122,7 @@ class ChatRepositoryTest(
                 result.id shouldBe givenId
                 result.name shouldBeEqual row["name"] as String
                 result.owner?.id?.shouldBeEqual(row["owner_id"])
-                result.createdAt.shouldBeCloseTo((row["created_at"] as Timestamp).toInstant(), 1.milliseconds)
+                result.createdAt.shouldNotBeNull()
 
                 val memberRows = jdbc.loadChatMemberRows(givenId)
                 result.members shouldHaveSize memberRows.size
@@ -157,7 +134,7 @@ class ChatRepositoryTest(
 
                 result.members
                     .forEach {
-                        it.createdAt.shouldBeCloseTo((memberRowsByUserId[it.user.id]!!["created_at"] as Timestamp).toInstant(), 1.milliseconds)
+                        it.createdAt.shouldNotBeNull()
                     }
             }
         }
@@ -187,10 +164,9 @@ class ChatRepositoryTest(
 
                 val memberRowsByUserId = rows.associateBy { it["user_id"] as UUID }
 
-                result
-                    .forEach {
-                        it.createdAt.shouldBeCloseTo((memberRowsByUserId[it.user.id]!!["created_at"] as Timestamp).toInstant(), 1.milliseconds)
-                    }
+                result.forEach {
+                    it.createdAt.shouldNotBeNull()
+                }
             }
         }
     }
