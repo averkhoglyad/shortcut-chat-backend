@@ -1,16 +1,19 @@
 package io.averkhoglyad.shortcut.common.util
 
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldHaveSingleElement
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.equals.shouldBeEqual
+import io.kotest.matchers.ints.shouldBeInRange
 import io.kotest.matchers.ints.shouldBeZero
 import io.kotest.matchers.shouldBe
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.take
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.take
@@ -18,8 +21,9 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.yield
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.DurationUnit
+import kotlin.time.DurationUnit.MILLISECONDS
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FlowTest : FreeSpec({
@@ -115,108 +119,171 @@ class FlowTest : FreeSpec({
             runTest {
                 // given
                 val flow = emptyFlow<Int>()
+                val windowSize = 100.milliseconds
 
                 // when
-                val result = flow.windowed(100.milliseconds).toList()
+                val result = flow.windowed(windowSize)
+                    .toList()
 
                 // then
                 result shouldBe emptyList()
             }
         }
 
-        "groups elements within the time window" {
-            runTest {
-                // given
-                val flow = flow {
-                    emit(1)
-                    delay(50)
-                    emit(2)
-                    delay(60) // 110ms total - new window
-                    emit(3)
-                    delay(50) // 160ms total
-                    emit(4)
-                }
-
-                // when
-                val result = flow.windowed(100.milliseconds).toList()
-
-                // then
-                result shouldBe listOf(
-                    listOf(1, 2), // first 100ms window
-                    listOf(3, 4), // next 100ms window
-                )
-            }
-        }
-
         "emits partial window when flow completes" {
             runTest {
                 // given
+                val events = listOf(1, 2)
+                val windowSize = 100.milliseconds
                 val flow = flow {
-                    emit(1)
-                    delay(50)
-                    emit(2)
-                    delay(30) // 80ms total - flow completes before window ends
-                }
-
-                // when
-                val result = flow.windowed(100.milliseconds).toList()
-
-                // then
-                result shouldBe listOf(listOf(1, 2))
-            }
-        }
-
-        "handles rapid emissions within window" {
-            runTest {
-                // given
-                val original = flow {
-                    var i = 0
-                    repeat(5) {
-                        delay(50)
-                        repeat(10) {
-                            emit(i++)
-                            delay(1)
-                        }
-                        delay(50)
+                    events.forEach {
+                        emit(it)
+                        delay(20)
                     }
                 }
 
                 // when
-                val result: List<List<Int>> = original
-                    .windowed(100.milliseconds)
+                val result = flow.windowed(windowSize)
                     .toList()
 
                 // then
-                result shouldHaveSize 5
-                result.forEach {
-                    it shouldHaveSize 10
-                }
-
-                result.flatMap { it }
-                    .forEachIndexed { index, el -> el shouldBeEqual index }
+                result shouldHaveSingleElement events
             }
         }
 
-        "creates new window after period" {
+        "handle single element per window" {
             runTest {
                 // given
+                val events = listOf(1, 2, 3, 4, 5)
+                val windowSize = 100.milliseconds
                 val flow = flow {
-                    emit(1)
-                    delay(101)
-                    emit(2)
-                    delay(101)
-                    emit(3)
+                    delay(windowSize / 2)
+                    events.forEach {
+                        emit(it)
+                        delay(windowSize)
+                    }
                 }
 
                 // when
-                val result = flow.windowed(100.milliseconds).toList()
+                val result = flow.windowed(windowSize)
+                    .toList()
 
                 // then
-                result shouldBe listOf(
-                    listOf(1),
-                    listOf(2),
-                    listOf(3)
-                )
+                result shouldContainExactly events.map { listOf(it) }
+            }
+        }
+
+        "handle element 1ms before window finished" {
+            runTest {
+                // given
+                val events = listOf(1, 2)
+                val windowSize = 100.milliseconds
+                val flow = flow {
+                    events.forEach {
+                        emit(it)
+                        delay(windowSize - 1.milliseconds)
+                    }
+                }
+
+                // when
+                val result = flow.windowed(windowSize)
+                    .toList()
+
+                // then
+                result shouldHaveSingleElement events
+            }
+        }
+
+        "handle element 1ms after window finished" {
+            runTest {
+                // given
+                val events = listOf(1, 2)
+                val windowSize = 100.milliseconds
+                val flow = flow {
+                    events.forEach {
+                        emit(it)
+                        delay(windowSize + 1.milliseconds)
+                    }
+                }
+
+                // when
+                val result = flow.windowed(windowSize)
+                    .toList()
+
+                // then
+                result shouldContainExactly events.map { listOf(it) }
+            }
+        }
+
+        "handle element in borer of windows and put in one of the windows once only" {
+            runTest {
+                // given
+                val events = listOf(1, 2)
+                val windowSize = 100.milliseconds
+                val flow = flow {
+                    events.forEach {
+                        emit(it)
+                        delay(windowSize)
+                    }
+                }
+
+                // when
+                val result = flow.windowed(windowSize)
+                    .toList()
+
+                // then
+                result.size shouldBeInRange 1..2
+                result.flatMap { it } shouldContainExactly events
+            }
+        }
+
+        "handles rapid emissions within single window" {
+            runTest {
+                // given
+                val windowSize = 100.milliseconds
+                val events = Arb.int()
+                    .take(windowSize.toInt(MILLISECONDS))
+                    .toList()
+
+                val flow = flow {
+                    events.forEach {
+                        emit(it)
+                        delay(1.milliseconds)
+                    }
+                }
+
+                // when
+                val result = flow.windowed(windowSize)
+                    .toList()
+
+                // then
+                result shouldHaveSingleElement events
+            }
+        }
+
+        "handles rapid emissions within multiple windows" {
+            runTest {
+                // given
+                val windowSize = 100.milliseconds
+                val windowsCount = 10
+                val events = Arb.int()
+                    .take(windowSize.toInt(MILLISECONDS) * windowsCount)
+                    .toList()
+
+                val flow = flow {
+                    events.forEach {
+                        emit(it)
+                        delay(1.milliseconds)
+                    }
+                }
+
+                // when
+                val result = flow.windowed(windowSize)
+                    .toList()
+
+                // then
+                result shouldHaveSize windowsCount
+                result.flatMap { it } shouldContainExactly events
             }
         }
     }

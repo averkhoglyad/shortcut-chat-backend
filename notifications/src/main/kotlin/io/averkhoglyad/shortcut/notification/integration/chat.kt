@@ -34,7 +34,6 @@ class ChatRepositoryImpl(
 interface ChatMembersEndpoint {
 
     @GetExchange
-    @NonNull
     fun members(@RequestParam("chatId") chatIds: Collection<UUID>): Flow<Collection<ChatMembers>>
 
 }

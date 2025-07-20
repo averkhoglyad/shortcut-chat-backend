@@ -10,6 +10,7 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.yield
 import java.time.Duration
 import java.util.UUID.randomUUID
 import kotlin.time.Duration.Companion.milliseconds
@@ -35,7 +37,7 @@ class NotificationServiceImplTest : FreeSpec({
         val windowSize = Duration.ofMillis(500)
         val target = NotificationServiceImpl(usersRepo, windowSize)
 
-        "can handle a single event" - {
+        "can handle a single event" {
             runTest {
                 // given
                 val givenChat = ChatRef(id = randomUUID())
@@ -45,11 +47,10 @@ class NotificationServiceImplTest : FreeSpec({
                 every { usersRepo.members(listOf(givenChat.id)) } returns flowOf(mapOf(givenChat.id to givenMembers))
 
                 // when
-                launch {
-                    delay(1)
-                    target.handleEvent(givenEvent)
-                }
-                val events = target.events().first()
+                val eventsDef = async { target.events().first() }
+                yield() // shift coroutine to execute async block and subscribe for events firstly
+                launch { target.handleEvent(givenEvent) } // emit event in other coroutine
+                val events = eventsDef.await() // waiting for result
 
                 // then
                 events shouldHaveSize 1
@@ -57,7 +58,7 @@ class NotificationServiceImplTest : FreeSpec({
             }
         }
 
-        "can handle multiple events within the time window" - {
+        "can handle multiple events within the time window" {
             runTest {
                 // given
                 val givenChat = ChatRef(id = randomUUID())
@@ -80,7 +81,7 @@ class NotificationServiceImplTest : FreeSpec({
             }
         }
 
-        "can handle multiple events outside the time window" - {
+        "can handle multiple events outside the time window" {
             runTest {
                 // given
                 val givenChat = ChatRef(id = randomUUID())
@@ -105,7 +106,7 @@ class NotificationServiceImplTest : FreeSpec({
             }
         }
 
-        "keep the flow empty when no events are sent" - {
+        "keep the flow empty when no events are sent" {
             runTest {
                 // when
                 var ticks = 0
